@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.14/"></script>
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+    ], function(Map, MapView, FeatureLayer) {
+      var map = new Map({
+        basemap: "streets"
+      });
+
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        zoom: 5,
+        center: [15, 65] // longitudine, latitudine
+      });
+
+      // Adaugă aici codul pentru FeatureLayers și alte configurări
+    });
+  </script>
+</head>
+<body>
+  <div id="viewDiv" style="height: 100%; width: 100%;"></div>
+</body>
+</html>

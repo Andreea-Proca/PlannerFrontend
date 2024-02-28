@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "352835275222",
+    "project_id": "task-manager-b0625",
+    "storage_bucket": "task-manager-b0625.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352835275222:android:43b36aa36187aae93bfc77",
+        "android_client_info": {
+          "package_name": "com.example.planner_frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcDOdhthXmDRIjPThC2BFt5zziK21cCSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
