@@ -152,12 +152,14 @@ class _BookingPageState extends State<BookingPage> {
                           // Message newMessage =
                           //     Message('Hello from Flutter!', '1', '20:50');
                           Event newEvent = Event(
+                              '',
                               selectedDay!.toIso8601String(),
                               _inputTitleController.text,
                               selectedPriority,
                               selectedTime.toString());
                           firebaseService.sendEvent(newEvent);
                           initializeKEvents();
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
@@ -176,6 +178,7 @@ class _BookingPageState extends State<BookingPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           firebaseService.getEvents();
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,

@@ -1,3 +1,6 @@
+import 'dart:js';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planner_frontend/booking_page.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -5,6 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../utils.dart';
 import 'models/event.dart';
+import 'services/firebase_service.dart';
 import 'widgets/nav_drawer.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -23,6 +27,7 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
+  FirebaseService firebaseService = FirebaseService();
 
   @override
   void initState() {
@@ -44,9 +49,9 @@ class _SchedulePageState extends State<SchedulePage> {
     super.dispose();
   }
 
-  void _navigateTo(String routeName) {
-    Navigator.pushReplacementNamed(context, routeName);
-  }
+  // void _navigateTo(String routeName) {
+  //   Navigator.pushReplacementNamed(context, routeName);
+  // }
 
   List<Event> _getEventsForDay(DateTime day) {
     // Implementation example
@@ -103,6 +108,19 @@ class _SchedulePageState extends State<SchedulePage> {
     }
   }
 
+  Color getColorForPriority(String priority) {
+    switch (priority) {
+      case '1':
+        return Colors.red; // Set the color for 'High' priority
+      case '2':
+        return Colors.yellow; // Set the color for 'Medium' priority
+      case '3':
+        return Colors.green; // Set the color for 'Low' priority
+      default:
+        return Colors.blue; // Default color or any fallback color
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,13 +174,20 @@ class _SchedulePageState extends State<SchedulePage> {
                       decoration: BoxDecoration(
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(12.0),
-                        color: Colors.blue,
+                        color: getColorForPriority(value[index].priority),
                       ),
                       child: ListTile(
-                        onTap: () => print(
-                            '${value[index].title} | Time: ${value[index].startTime.substring(10, 15)}'),
+                        onTap: () => print("a"),
                         title: Text(
                             '${value[index].title} | Time: ${value[index].startTime.substring(10, 15)}'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            buildEditButton(value[index], context),
+                            SizedBox(width: 8.0), // Add spacing between buttons
+                            buildDeleteButton(value[index], context),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -203,4 +228,101 @@ class _SchedulePageState extends State<SchedulePage> {
       ),
     );
   }
+
+  Widget buildDeleteButton(Event event, BuildContext context) {
+    print("event: $event");
+    return ElevatedButton(
+      onPressed: () {
+        showDialog(
+          context: context, // Use builderContext here
+          builder: (BuildContext context) {
+            Size screenSize = MediaQuery.of(context).size;
+            double widthFactor = screenSize.width > 800
+                ? 0.5
+                : (screenSize.width > 600 ? 0.75 : 0.95);
+            return AlertDialog(
+              scrollable: true,
+              backgroundColor: Color.fromARGB(255, 163, 204, 120),
+              title: Text('Are you sure you want to delete this event?'),
+              content: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(height: 20.0),
+                    FractionallySizedBox(
+                      widthFactor: widthFactor,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          firebaseService.deleteEvent(event);
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor: Color(0xFFB6D0E2),
+                          padding: EdgeInsets.symmetric(vertical: 15.0),
+                        ),
+                        child: const Text(
+                          'Yes',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    FractionallySizedBox(
+                      widthFactor: widthFactor,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor: const Color(0xFFB6D0E2),
+                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        ),
+                        child: const Text(
+                          'No',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFFB6D0E2),
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+      ),
+      child: const Icon(Icons.delete),
+    );
+  }
+
+  Widget buildEditButton(Event event, BuildContext context) {
+    // return Builder(
+    //   builder: (BuildContext builderContext) {
+    return ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return BookingPage(
+                  selectedDay: DateTime.parse(event.day),
+                );
+              },
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.black,
+          backgroundColor: const Color(0xFFB6D0E2),
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+        ),
+        child: const Icon(Icons.edit));
+  }
+  // );
 }

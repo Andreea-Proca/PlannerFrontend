@@ -75,14 +75,6 @@ mixin SharedMethods {
                             child: buildTextField(_itemListController, 'Items',
                                 'Write list\'s items separated by a commma'),
                           ),
-                          // TextFormField(
-                          //   decoration: const InputDecoration(
-                          //     labelText: 'Items',
-                          //     hintText:
-                          //         'Write list\'s items separated by a commma',
-                          //     icon: Icon(Icons.email),
-                          //   ),
-                          // ),
                           const SizedBox(height: 20.0),
                           FractionallySizedBox(
                             widthFactor: widthFactor,
@@ -98,6 +90,7 @@ mixin SharedMethods {
                                     items,
                                     _dueDateController.text);
                                 firebaseService.sendNote(newNote);
+                                Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.black,

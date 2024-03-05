@@ -11,6 +11,11 @@ class FirebaseService {
     await _database.child('events').push().set(event.toMap());
   }
 
+  // Write a note to the database
+  Future<void> updateEvent(Event event) async {
+    await _database.child('events').child(event.id).update(event.toMap());
+  }
+
   // Read events from the database
   Future<List<Event>> getEvents() async {
     final snapshot = await _database.child('events').get();
@@ -28,6 +33,16 @@ class FirebaseService {
     return events;
   }
 
+  Future<void> deleteEvent(Event event) async {
+    try {
+      await _database.child('event').child(event.id).remove();
+      print(' deleted event: ${event.id}');
+    } catch (e) {
+      print('Error deleting event: $e');
+    }
+  }
+
+// NOTES
   // Write a note to the database
   Future<void> sendNote(Note note) async {
     // var result = await _database.child('notes').push().set(note.toMap());
@@ -35,6 +50,7 @@ class FirebaseService {
     DatabaseReference newNoteRef = reference.push();
     await newNoteRef.set(note.toMap());
     note.id = newNoteRef.key!;
+    updateNote(note);
   }
 
   // Write a note to the database
@@ -66,5 +82,14 @@ class FirebaseService {
     //       element.startTime);
     // }
     return notes;
+  }
+
+  Future<void> deleteNote(Note note) async {
+    try {
+      await _database.child('notes').child(note.id).remove();
+      print(' deleted note: ${note.id}');
+    } catch (e) {
+      print('Error deleting note: $e');
+    }
   }
 }

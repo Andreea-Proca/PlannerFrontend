@@ -103,8 +103,8 @@ var kEvents = {};
 void initializeKEvents() async {
   Map<DateTime, List<Event>> kEventSource =
       await getEventsMap(); // Wait for getEventsMap() to complete
-  print("source: ");
-  print(kEventSource);
+  // print("source: ");
+  //print(kEventSource);
   kEvents = LinkedHashMap<DateTime, List<Event>>(
     equals: isSameDay,
     hashCode: getHashCode,

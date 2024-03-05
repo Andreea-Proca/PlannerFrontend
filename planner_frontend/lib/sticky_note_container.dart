@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:planner_frontend/mixinMethods.dart';
 import 'package:planner_frontend/services/firebase_service.dart';
@@ -65,8 +67,16 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
         Text(
           note.title,
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 25,
             fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          'Due ${note.dueDate}',
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
           ),
         ),
         const SizedBox(height: 15), // Adjust spacing as needed
@@ -101,27 +111,6 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                         crossedDownList[index] = !crossedDownList[index];
                       });
                       print(crossedDownList);
-                      //  return Row(
-                      //         mainAxisSize: MainAxisSize.min,
-                      //         children: [
-                      //           ElevatedButton(
-                      //             onPressed: () {
-                      //               // Handle the first button action
-                      //               print('Button 1 tapped for Item $index');
-                      //             },
-                      //             child: Text('Button 1'),
-                      //           ),
-                      //           SizedBox(width: 8.0), // Add spacing between buttons
-                      //           ElevatedButton(
-                      //             onPressed: () {
-                      //               // Handle the second button action
-                      //               print('Button 2 tapped for Item $index');
-                      //             },
-                      //             child: Text('Button 2'),
-                      //           ),
-                      //         ],
-                      //       )
-                      //     : null,
                     });
               },
             ),
@@ -186,12 +175,8 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                                     note.title = _inputTitleController.text;
                                     note.dueDate = _dueDateController.text;
                                     note.items = items;
-                                    // Note newNote = Note(
-                                    //     _inputTitleController.text,
-                                    //     items,
-                                    //     _dueDateController.text);
-                                    // firebaseService.sendNote(newNote);
                                     firebaseService.updateNote(note);
+                                    Navigator.of(context).pop();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.black,
@@ -219,6 +204,89 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
                 ),
                 child: const Icon(Icons.edit),
+              );
+            },
+          ),
+        ),
+
+        const SizedBox(height: 20.0),
+        FractionallySizedBox(
+          alignment: Alignment.bottomLeft,
+          child: Builder(
+            builder: (BuildContext builderContext) {
+              return ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: builderContext, // Use builderContext here
+                    builder: (BuildContext context) {
+                      Size screenSize = MediaQuery.of(context).size;
+                      double widthFactor = screenSize.width > 800
+                          ? 0.5
+                          : (screenSize.width > 600 ? 0.75 : 0.95);
+                      return AlertDialog(
+                        scrollable: true,
+                        backgroundColor: Color.fromARGB(255, 163, 204, 120),
+                        title:
+                            Text('Are you sure you want to delete this note?'),
+                        content: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              const SizedBox(height: 20.0),
+                              FractionallySizedBox(
+                                widthFactor: widthFactor,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    firebaseService.deleteNote(note);
+                                    Navigator.of(context).pop();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: Color(0xFFB6D0E2),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 15.0),
+                                  ),
+                                  child: const Text(
+                                    'Yes',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20.0),
+                              FractionallySizedBox(
+                                widthFactor: widthFactor,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: const Color(0xFFB6D0E2),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15.0),
+                                  ),
+                                  child: const Text(
+                                    'No',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  backgroundColor: const Color(0xFFB6D0E2),
+                  padding: const EdgeInsets.symmetric(vertical: 15.0),
+                ),
+                child: const Icon(Icons.delete),
               );
             },
           ),
