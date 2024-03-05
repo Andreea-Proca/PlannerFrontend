@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:planner_frontend/schedule_page.dart';
+import 'package:planner_frontend/utils.dart';
 
 import 'models/event.dart';
 import 'services/firebase_service.dart';
@@ -156,6 +157,7 @@ class _BookingPageState extends State<BookingPage> {
                               selectedPriority,
                               selectedTime.toString());
                           firebaseService.sendEvent(newEvent);
+                          initializeKEvents();
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class StickyNote extends StatelessWidget {
   StickyNote(
       {required this.child,
-      this.color = const Color.fromARGB(255, 226, 226, 100)});
+      this.color = const Color.fromARGB(255, 235, 235, 170)});
 
   final Widget child;
   final Color color;

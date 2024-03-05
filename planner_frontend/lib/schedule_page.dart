@@ -26,11 +26,16 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   void initState() {
+    super.initState();
+    //_onRangeSelected(_rangeStart, _rangeEnd, DateTime.now());
+    //_getEventsForRange(_rangeStart!, _rangeEnd!);
+    //_rangeSelectionMode.toggleOn;
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-    super.initState();
+    // initializeKEvents();
+    // _onDaySelected(DateTime.now(), DateTime.now());
     // print("kevents :");
-    // print(kEvents);
+    // print("init ");
   }
 
   @override
@@ -47,7 +52,9 @@ class _SchedulePageState extends State<SchedulePage> {
     // Implementation example
     // print("kevents :");
     // print(kEvents);
-    mainInitEvents();
+
+    initializeKEvents();
+    // mainInitEvents();
     return kEvents[day] ?? [];
   }
 
@@ -99,9 +106,9 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       appBar: AppBar(
-        title: Text('TableCalendar - Events'),
+        title: const Text('TableCalendar - Events'),
       ),
       body: Column(
         children: [
@@ -152,8 +159,10 @@ class _SchedulePageState extends State<SchedulePage> {
                         color: Colors.blue,
                       ),
                       child: ListTile(
-                        onTap: () => print('${value[index].title}'),
-                        title: Text('${value[index].title}'),
+                        onTap: () => print(
+                            '${value[index].title} | Time: ${value[index].startTime.substring(10, 15)}'),
+                        title: Text(
+                            '${value[index].title} | Time: ${value[index].startTime.substring(10, 15)}'),
                       ),
                     );
                   },
@@ -175,7 +184,7 @@ class _SchedulePageState extends State<SchedulePage> {
             },
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.black,
-              backgroundColor: Color.fromARGB(255, 55, 151, 221),
+              backgroundColor: const Color.fromARGB(255, 55, 151, 221),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25.0),
               ),

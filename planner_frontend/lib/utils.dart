@@ -5,6 +5,7 @@ import 'dart:collection';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'models/note.dart';
 import 'services/firebase_service.dart';
 import 'models/event.dart';
 
@@ -99,7 +100,7 @@ Future<Map<DateTime, List<Event>>> getEventsMap() async {
 var kEvents = {};
 
 // Declare an asynchronous function to initialize kEvents
-Future<void> initializeKEvents() async {
+void initializeKEvents() async {
   Map<DateTime, List<Event>> kEventSource =
       await getEventsMap(); // Wait for getEventsMap() to complete
   print("source: ");
@@ -110,13 +111,4 @@ Future<void> initializeKEvents() async {
   )..addAll(kEventSource);
 
   //print(kEvents);
-}
-
-// Call the asynchronous initialization function
-void mainInitEvents() async {
-  await initializeKEvents();
-
-  // Now you can use kEvents or perform any other operations
-  // where you need the populated kEvents map.
-  // print(kEvents);
 }
