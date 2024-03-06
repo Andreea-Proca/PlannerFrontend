@@ -134,7 +134,7 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                       return AlertDialog(
                         scrollable: true,
                         backgroundColor: Color.fromARGB(255, 163, 204, 120),
-                        title: const Text('Edit your list'),
+                        title: const Text('Edit your note'),
                         content: Padding(
                           padding: const EdgeInsets.all(20.0),
                           // child: Form(

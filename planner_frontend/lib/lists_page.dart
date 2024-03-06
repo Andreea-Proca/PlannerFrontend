@@ -36,10 +36,11 @@ class _ListsPageState extends State<ListsPage> with SharedMethods {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 76, 90, 84),
+      backgroundColor: Color.fromARGB(255, 98, 137, 120),
       drawer: const NavDrawer(),
       appBar: AppBar(
         title: const Text('Move Container on Touch App'),
+        backgroundColor: Color.fromARGB(255, 81, 164, 205),
       ),
       body: FutureBuilder<List<Note>>(
         future: firebaseService

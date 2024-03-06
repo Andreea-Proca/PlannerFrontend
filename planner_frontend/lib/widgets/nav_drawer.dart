@@ -68,13 +68,83 @@ class NavDrawer extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () async => {
-              Navigator.of(context).pop(),
-              await FirebaseAuth.instance.signOut(),
-              Navigator.pushReplacementNamed(context, '/login')
+              // Navigator.of(context).pop(),
+              // await FirebaseAuth.instance.signOut(),
+              // Navigator.pushReplacementNamed(context, '/login')
+              buildLogoutButton(context)
             },
           ),
         ],
       ),
+    );
+  }
+
+  void _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
+  Future<dynamic> buildLogoutButton(BuildContext context) {
+    // return ElevatedButton(
+    //   onPressed: () {
+    return showDialog(
+      context: context, // Use builderContext here
+      builder: (BuildContext context) {
+        Size screenSize = MediaQuery.of(context).size;
+        double widthFactor = screenSize.width > 800
+            ? 0.5
+            : (screenSize.width > 600 ? 0.75 : 0.95);
+        return AlertDialog(
+          scrollable: true,
+          backgroundColor: Color.fromARGB(255, 163, 204, 120),
+          title: Text('Are you sure you want to logout?'),
+          content: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(height: 20.0),
+                FractionallySizedBox(
+                  widthFactor: widthFactor,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _logout(context);
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: Color(0xFFB6D0E2),
+                      padding: EdgeInsets.symmetric(vertical: 15.0),
+                    ),
+                    child: const Text(
+                      'Yes',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                FractionallySizedBox(
+                  widthFactor: widthFactor,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color(0xFFB6D0E2),
+                      padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    ),
+                    child: const Text(
+                      'No',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

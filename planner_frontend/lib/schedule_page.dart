@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../utils.dart';
+import 'edit_event_page.dart';
 import 'models/event.dart';
 import 'services/firebase_service.dart';
 import 'widgets/nav_drawer.dart';
@@ -127,6 +128,7 @@ class _SchedulePageState extends State<SchedulePage> {
       drawer: const NavDrawer(),
       appBar: AppBar(
         title: const Text('TableCalendar - Events'),
+        backgroundColor: Color.fromARGB(255, 81, 164, 205),
       ),
       body: Column(
         children: [
@@ -307,14 +309,13 @@ class _SchedulePageState extends State<SchedulePage> {
     //   builder: (BuildContext builderContext) {
     return ElevatedButton(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return BookingPage(
-                  selectedDay: DateTime.parse(event.day),
-                );
-              },
-            ),
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return EditEventPage(
+                  selectedDay: _selectedDay,
+                  event: event); // Your page content goes here
+            },
           );
         },
         style: ElevatedButton.styleFrom(
