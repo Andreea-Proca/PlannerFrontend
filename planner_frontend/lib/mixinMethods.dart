@@ -84,11 +84,14 @@ mixin SharedMethods {
                                     .split(',')
                                     .map((word) => word.trim())
                                     .toList();
+                                List<bool> crossedDownList = List.generate(
+                                    items.length, (index) => false);
                                 Note newNote = Note(
                                     '',
                                     _inputTitleController.text,
                                     items,
-                                    _dueDateController.text);
+                                    _dueDateController.text,
+                                    crossedDownList);
                                 firebaseService.sendNote(newNote);
                                 Navigator.pop(context);
                               },

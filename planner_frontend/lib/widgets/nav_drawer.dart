@@ -96,7 +96,7 @@ class NavDrawer extends StatelessWidget {
             : (screenSize.width > 600 ? 0.75 : 0.95);
         return AlertDialog(
           scrollable: true,
-          backgroundColor: Color.fromARGB(255, 163, 204, 120),
+          backgroundColor: Color.fromARGB(255, 161, 197, 123),
           title: Text('Are you sure you want to logout?'),
           content: Padding(
             padding: EdgeInsets.all(20.0),

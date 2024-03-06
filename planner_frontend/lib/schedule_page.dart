@@ -30,6 +30,10 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime? _rangeEnd;
   FirebaseService firebaseService = FirebaseService();
 
+  String selectedOrderType = 'Date';
+  List<String> orderTypes = ['Name', 'Priority', 'Time', 'Date'];
+  final _wmTypeController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +57,25 @@ class _SchedulePageState extends State<SchedulePage> {
   // void _navigateTo(String routeName) {
   //   Navigator.pushReplacementNamed(context, routeName);
   // }
+  List<Event> sortEvents(List<Event> events, String orderType) {
+    switch (orderType) {
+      case 'Name':
+        events.sort((a, b) => a.title.compareTo(b.title));
+        break;
+      case 'Priority':
+        events.sort((a, b) => a.priority.compareTo(b.priority));
+        break;
+      case 'Time':
+        events.sort((a, b) => a.startTime.compareTo(b.startTime));
+        break;
+      case 'Date':
+        events.sort((a, b) => a.startTime.compareTo(b.day.substring(0, 10)));
+        break;
+      // Add more cases for additional order types if needed
+    }
+
+    return events;
+  }
 
   List<Event> _getEventsForDay(DateTime day) {
     // Implementation example
@@ -60,7 +83,6 @@ class _SchedulePageState extends State<SchedulePage> {
     // print(kEvents);
 
     initializeKEvents();
-    // mainInitEvents();
     return kEvents[day] ?? [];
   }
 
@@ -112,11 +134,14 @@ class _SchedulePageState extends State<SchedulePage> {
   Color getColorForPriority(String priority) {
     switch (priority) {
       case '1':
-        return Colors.red; // Set the color for 'High' priority
+        return const Color.fromARGB(
+            255, 238, 100, 90); // Set the color for 'High' priority
       case '2':
-        return Colors.yellow; // Set the color for 'Medium' priority
+        return const Color.fromARGB(
+            255, 246, 232, 112); // Set the color for 'Medium' priority
       case '3':
-        return Colors.green; // Set the color for 'Low' priority
+        return Color.fromARGB(
+            255, 119, 209, 122); // Set the color for 'Low' priority
       default:
         return Colors.blue; // Default color or any fallback color
     }
@@ -124,6 +149,10 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double widthFactor =
+        screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
+
     return Scaffold(
       drawer: const NavDrawer(),
       appBar: AppBar(
@@ -160,7 +189,19 @@ class _SchedulePageState extends State<SchedulePage> {
               _focusedDay = focusedDay;
             },
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 15.0),
+          Row(
+            children: [
+              SizedBox(height: 0.0, width: widthFactor * 3250),
+              SizedBox(
+                // widthFactor: widthFactor / 6,
+                //alignment: Alignment.topRight,
+                width: widthFactor * 300,
+                child: buildDropdownButton(_selectedEvents.value),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15.0),
           Expanded(
             child: ValueListenableBuilder<List<Event>>(
               valueListenable: _selectedEvents,
@@ -231,6 +272,31 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
+  Widget buildDropdownButton(List<Event> events) {
+    return DropdownButtonFormField<String>(
+      alignment: Alignment.topRight,
+      value: selectedOrderType,
+      decoration: const InputDecoration(
+        labelText: 'Order by',
+        labelStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        border: OutlineInputBorder(),
+      ),
+      onChanged: (String? newValue) {
+        setState(() {
+          selectedOrderType = newValue!;
+          _wmTypeController.text = newValue;
+          sortEvents(events, selectedOrderType);
+        });
+      },
+      items: orderTypes.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
   Widget buildDeleteButton(Event event, BuildContext context) {
     print("event: $event");
     return ElevatedButton(
@@ -244,7 +310,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 : (screenSize.width > 600 ? 0.75 : 0.95);
             return AlertDialog(
               scrollable: true,
-              backgroundColor: Color.fromARGB(255, 163, 204, 120),
+              backgroundColor: Color.fromARGB(255, 161, 197, 123),
               title: Text('Are you sure you want to delete this event?'),
               content: Padding(
                 padding: EdgeInsets.all(20.0),

@@ -22,7 +22,8 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
   final _dueDateController = TextEditingController();
   final _inputTitleController = TextEditingController();
   final _itemListController = TextEditingController();
-  List<bool> crossedDownList = List.generate(25, (index) => false);
+  // late List<bool> crossedDownList =
+  //     List.generate(note.items.length, (index) => false);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +31,8 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
         color: const Color.fromRGBO(255, 0, 0, 0),
         child: Center(
             child: SizedBox(
-                width: 300,
-                height: 300,
+                width: 350,
+                height: 350,
                 child: Container(
                     color: const Color.fromRGBO(255, 0, 0, 0),
                     child: StickyNote(child: buildList())))));
@@ -67,7 +68,7 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
         Text(
           note.title,
           style: const TextStyle(
-            fontSize: 25,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -79,12 +80,14 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
             fontStyle: FontStyle.italic,
           ),
         ),
-        const SizedBox(height: 15), // Adjust spacing as needed
+        const SizedBox(height: 0), // Adjust spacing as needed
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
+            padding: const EdgeInsets.only(bottom: 0.0),
             child: ListView.builder(
-              padding: const EdgeInsets.only(left: 60.0),
+              itemExtent: 35.0,
+              padding:
+                  const EdgeInsets.only(left: 60.0, bottom: 0.0, right: 20.0),
               controller: ScrollController(),
               itemCount: note.items.length,
               itemBuilder: (context, index) {
@@ -95,22 +98,25 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                     title: Text(
                       note.items[index],
                       style: TextStyle(
-                        decoration: crossedDownList[index]
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                        color: crossedDownList[index]
-                            ? Colors
-                                .grey // You can set a different color when the text is crossed out
-                            : Colors.black,
-                      ),
+                          decoration: note.crossedDownList[index]
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                          color: note.crossedDownList[index]
+                              ? Colors
+                                  .grey // You can set a different color when the text is crossed out
+                              : Colors.black,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold),
                     ),
                     enabled: true,
                     onTap: () {
                       print("TAP");
                       setState(() {
-                        crossedDownList[index] = !crossedDownList[index];
+                        note.crossedDownList[index] =
+                            !note.crossedDownList[index];
+                        firebaseService.updateNote(note);
                       });
-                      print(crossedDownList);
+                      print(note.crossedDownList);
                     });
               },
             ),
@@ -118,179 +124,181 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
         ),
 
         const SizedBox(height: 20.0),
-        FractionallySizedBox(
-          alignment: Alignment.bottomLeft,
-          child: Builder(
-            builder: (BuildContext builderContext) {
-              return ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: builderContext, // Use builderContext here
-                    builder: (BuildContext context) {
-                      Size screenSize = MediaQuery.of(context).size;
-                      double widthFactor = screenSize.width > 800
-                          ? 0.5
-                          : (screenSize.width > 600 ? 0.75 : 0.95);
-                      return AlertDialog(
-                        scrollable: true,
-                        backgroundColor: Color.fromARGB(255, 163, 204, 120),
-                        title: const Text('Edit your note'),
-                        content: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          // child: Form(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              const SizedBox(height: 20.0),
-                              FractionallySizedBox(
-                                widthFactor: widthFactor,
-                                child: buildTextField(_inputTitleController,
-                                    'Title', '', note.title),
-                              ),
-                              const SizedBox(height: 20.0),
-                              FractionallySizedBox(
-                                widthFactor: widthFactor,
-                                child: buildTextField(_dueDateController,
-                                    'Due date', 'dd/mm/yyyy', note.dueDate),
-                              ),
-                              const SizedBox(height: 20.0),
-                              FractionallySizedBox(
-                                widthFactor: widthFactor,
-                                child: buildTextField(
-                                    _itemListController,
-                                    'Items',
-                                    'Write list\'s items separated by a commma',
-                                    note.items.join(', ')),
-                              ),
-                              const SizedBox(height: 20.0),
-                              FractionallySizedBox(
-                                widthFactor: widthFactor,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    List<String> items = _itemListController
-                                        .text
-                                        .split(',')
-                                        .map((word) => word.trim())
-                                        .toList();
-                                    note.title = _inputTitleController.text;
-                                    note.dueDate = _dueDateController.text;
-                                    note.items = items;
-                                    firebaseService.updateNote(note);
-                                    Navigator.of(context).pop();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: const Color(0xFFB6D0E2),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15.0),
-                                  ),
-                                  child: const Text(
-                                    'Save the note',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+        Row(children: [
+          const SizedBox(height: 20.0, width: 200),
+          FractionallySizedBox(
+            alignment: Alignment.bottomRight,
+            child: Builder(
+              builder: (BuildContext builderContext) {
+                return ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: builderContext, // Use builderContext here
+                      builder: (BuildContext context) {
+                        Size screenSize = MediaQuery.of(context).size;
+                        double widthFactor = screenSize.width > 800
+                            ? 0.5
+                            : (screenSize.width > 600 ? 0.75 : 0.95);
+                        return AlertDialog(
+                          scrollable: true,
+                          backgroundColor: Color.fromARGB(255, 163, 204, 120),
+                          title: const Text('Edit your note'),
+                          content: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            // child: Form(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                const SizedBox(height: 20.0),
+                                FractionallySizedBox(
+                                  widthFactor: widthFactor,
+                                  child: buildTextField(_inputTitleController,
+                                      'Title', '', note.title),
+                                ),
+                                const SizedBox(height: 20.0),
+                                FractionallySizedBox(
+                                  widthFactor: widthFactor,
+                                  child: buildTextField(_dueDateController,
+                                      'Due date', 'dd/mm/yyyy', note.dueDate),
+                                ),
+                                const SizedBox(height: 20.0),
+                                FractionallySizedBox(
+                                  widthFactor: widthFactor,
+                                  child: buildTextField(
+                                      _itemListController,
+                                      'Items',
+                                      'Write list\'s items separated by a commma',
+                                      note.items.join(', ')),
+                                ),
+                                const SizedBox(height: 20.0),
+                                FractionallySizedBox(
+                                  widthFactor: widthFactor,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      List<String> items = _itemListController
+                                          .text
+                                          .split(',')
+                                          .map((word) => word.trim())
+                                          .toList();
+                                      note.title = _inputTitleController.text;
+                                      note.dueDate = _dueDateController.text;
+                                      note.items = items;
+                                      firebaseService.updateNote(note);
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.black,
+                                      backgroundColor: const Color(0xFFB6D0E2),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15.0),
+                                    ),
+                                    child: const Text(
+                                      'Save the note',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: const Color(0xFFB6D0E2),
-                  padding: const EdgeInsets.symmetric(vertical: 15.0),
-                ),
-                child: const Icon(Icons.edit),
-              );
-            },
+                        );
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: const Color(0xFFB6D0E2),
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                  ),
+                  child: const Icon(Icons.edit),
+                );
+              },
+            ),
           ),
-        ),
-
-        const SizedBox(height: 20.0),
-        FractionallySizedBox(
-          alignment: Alignment.bottomLeft,
-          child: Builder(
-            builder: (BuildContext builderContext) {
-              return ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: builderContext, // Use builderContext here
-                    builder: (BuildContext context) {
-                      Size screenSize = MediaQuery.of(context).size;
-                      double widthFactor = screenSize.width > 800
-                          ? 0.5
-                          : (screenSize.width > 600 ? 0.75 : 0.95);
-                      return AlertDialog(
-                        scrollable: true,
-                        backgroundColor: Color.fromARGB(255, 163, 204, 120),
-                        title:
-                            Text('Are you sure you want to delete this note?'),
-                        content: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              const SizedBox(height: 20.0),
-                              FractionallySizedBox(
-                                widthFactor: widthFactor,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    firebaseService.deleteNote(note);
-                                    Navigator.of(context).pop();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: Color(0xFFB6D0E2),
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 15.0),
-                                  ),
-                                  child: const Text(
-                                    'Yes',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 20.0),
-                              FractionallySizedBox(
-                                widthFactor: widthFactor,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: const Color(0xFFB6D0E2),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15.0),
-                                  ),
-                                  child: const Text(
-                                    'No',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+          const SizedBox(height: 20.0),
+          FractionallySizedBox(
+            alignment: Alignment.bottomRight,
+            child: Builder(
+              builder: (BuildContext builderContext) {
+                return ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: builderContext, // Use builderContext here
+                      builder: (BuildContext context) {
+                        Size screenSize = MediaQuery.of(context).size;
+                        double widthFactor = screenSize.width > 800
+                            ? 0.5
+                            : (screenSize.width > 600 ? 0.75 : 0.95);
+                        return AlertDialog(
+                          scrollable: true,
+                          backgroundColor: Color.fromARGB(255, 163, 204, 120),
+                          title: Text(
+                              'Are you sure you want to delete this note?'),
+                          content: Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                const SizedBox(height: 20.0),
+                                FractionallySizedBox(
+                                  widthFactor: widthFactor,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      firebaseService.deleteNote(note);
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.black,
+                                      backgroundColor: Color(0xFFB6D0E2),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 15.0),
+                                    ),
+                                    child: const Text(
+                                      'Yes',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 20.0),
+                                FractionallySizedBox(
+                                  widthFactor: widthFactor,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.black,
+                                      backgroundColor: const Color(0xFFB6D0E2),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15.0),
+                                    ),
+                                    child: const Text(
+                                      'No',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: const Color(0xFFB6D0E2),
-                  padding: const EdgeInsets.symmetric(vertical: 15.0),
-                ),
-                child: const Icon(Icons.delete),
-              );
-            },
+                        );
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: const Color(0xFFB6D0E2),
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                  ),
+                  child: const Icon(Icons.delete),
+                );
+              },
+            ),
           ),
-        ),
+        ]),
       ],
     );
   }

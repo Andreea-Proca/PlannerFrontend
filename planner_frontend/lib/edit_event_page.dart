@@ -21,17 +21,27 @@ class EditEventPage extends StatefulWidget {
 }
 
 class _EditEventPageState extends State<EditEventPage> {
+  late Event event = widget.event;
   final _formKey = GlobalKey<FormState>();
   final _wmNoController = TextEditingController();
   final _startHourController = TextEditingController();
   final _inputTitleController = TextEditingController();
   String selectedPriority = '1';
   List<String> priorities = ['1', '2', '3'];
-  TimeOfDay selectedTime = TimeOfDay.now();
+  // TimeOfDay selectedTime = TimeOfDay.now();
   String inputTitle = '';
   late DateTime? selectedDay = widget.selectedDay;
-  late Event event = widget.event;
   final FirebaseService firebaseService = FirebaseService();
+
+  TimeOfDay parseTimeString(String timeString) {
+    List<String> parts = timeString.substring(10, 15).split(':');
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1]);
+
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
+  late TimeOfDay selectedTime = parseTimeString(event.startTime);
 
   Future<void> _navigateTo(String routeName) async {
     Navigator.pushReplacementNamed(context, routeName);
@@ -98,7 +108,7 @@ class _EditEventPageState extends State<EditEventPage> {
         width: 500, // Set the width of the Scaffold
         height: 600, // Set the height of the Scaffold
         child: Scaffold(
-          backgroundColor: const Color.fromARGB(255, 195, 245, 142),
+          backgroundColor: Color.fromARGB(255, 161, 197, 123),
           appBar: AppBar(
             title: const Text('Edit event'),
           ),

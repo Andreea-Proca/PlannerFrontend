@@ -92,7 +92,7 @@ class _BookingPageState extends State<BookingPage> {
         width: 500, // Set the width of the Scaffold
         height: 600, // Set the height of the Scaffold
         child: Scaffold(
-          backgroundColor: const Color.fromARGB(255, 195, 245, 142),
+          backgroundColor: Color.fromARGB(255, 161, 197, 123),
           appBar: AppBar(
             title: const Text('Add events'),
           ),
