@@ -8,8 +8,8 @@ import 'login_page.dart';
 import 'signup_page.dart';
 import 'home_page.dart';
 import 'schedule_page.dart';
-import 'map_page.dart';
 import 'lists_page.dart';
+import 'world_map.dart';
 // import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -17,12 +17,21 @@ Future<void> main() async {
   await Firebase.initializeApp(
     // options: DefaultFirebaseOptions.currentPlatform,
     options: const FirebaseOptions(
-      apiKey: 'AIzaSyBvGX5ca4HGO45vRaKQMdHb6j4izNq7zTA',
-      appId: '1:352835275222:ios:5d2c56463bd781553bfc77',
+      // apiKey: 'AIzaSyCcDOdhthXmDRIjPThC2BFt5zziK21cCSM',
+      // appId: '1:352835275222:ios:2a4e484349bc28d83bfc77',
+      // messagingSenderId: '352835275222',
+      // projectId: 'task-manager-b0625',
+      // databaseURL:
+      //     'https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app/',
+      apiKey: 'AIzaSyCuI-FZ5S0FRjCZJ6oPSDj3CQfqxcsTHtA',
+      appId: '1:352835275222:web:f3f2186d305da1c33bfc77',
       messagingSenderId: '352835275222',
       projectId: 'task-manager-b0625',
+      authDomain: 'task-manager-b0625.firebaseapp.com',
       databaseURL:
-          'https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app/',
+          'https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app',
+      storageBucket: 'task-manager-b0625.appspot.com',
+      measurementId: 'G-EH7ER531SW',
     ),
   );
   runApp(const MyApp());
@@ -75,8 +84,8 @@ class _MyAppState extends State<MyApp> {
           // '/dashboard': (_) => const Dashboard(),
           '/booking': (_) => const AuthGuard(protectedPage: BookingPage()),
           '/schedule': (_) => const SchedulePage(),
-          '/map': (_) => const MapPage(),
           '/lists': (_) => const ListsPage(),
+          '/world_map': (_) => const WorldMapPage(),
         },
         initialRoute: '/login',
         home: const LoginPage());

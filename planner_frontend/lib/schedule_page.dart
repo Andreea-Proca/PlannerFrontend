@@ -1,4 +1,4 @@
-import 'dart:js';
+//import 'dart:js';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -196,7 +196,7 @@ class _SchedulePageState extends State<SchedulePage> {
               SizedBox(
                 // widthFactor: widthFactor / 6,
                 //alignment: Alignment.topRight,
-                width: widthFactor * 300,
+                width: widthFactor * 250,
                 child: buildDropdownButton(_selectedEvents.value),
               ),
             ],

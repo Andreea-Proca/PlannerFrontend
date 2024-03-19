@@ -55,6 +55,14 @@ class NavDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.map_outlined),
+            title: Text('World Map'),
+            onTap: () => {
+              Navigator.of(context).pop(),
+              Navigator.pushReplacementNamed(context, '/world_map')
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
             onTap: () => {Navigator.of(context).pop()},

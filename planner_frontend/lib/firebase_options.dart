@@ -45,36 +45,40 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCuI-FZ5S0FRjCZJ6oPSDj3CQfqxcsTHtA',
-    appId: '1:352835275222:web:08061bad1ad2e3403bfc77',
+    appId: '1:352835275222:web:f3f2186d305da1c33bfc77',
     messagingSenderId: '352835275222',
     projectId: 'task-manager-b0625',
     authDomain: 'task-manager-b0625.firebaseapp.com',
+    databaseURL: 'https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'task-manager-b0625.appspot.com',
-    measurementId: 'G-7RQEXRC8XV',
+    measurementId: 'G-EH7ER531SW',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCcDOdhthXmDRIjPThC2BFt5zziK21cCSM',
-    appId: '1:352835275222:android:43b36aa36187aae93bfc77',
+    appId: '1:352835275222:android:86ba92653f8f67e73bfc77',
     messagingSenderId: '352835275222',
     projectId: 'task-manager-b0625',
+    databaseURL: 'https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'task-manager-b0625.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBvGX5ca4HGO45vRaKQMdHb6j4izNq7zTA',
-    appId: '1:352835275222:ios:5d2c56463bd781553bfc77',
+    appId: '1:352835275222:ios:2a4e484349bc28d83bfc77',
     messagingSenderId: '352835275222',
     projectId: 'task-manager-b0625',
+    databaseURL: 'https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'task-manager-b0625.appspot.com',
     iosBundleId: 'com.example.plannerFrontend',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBvGX5ca4HGO45vRaKQMdHb6j4izNq7zTA',
-    appId: '1:352835275222:ios:5d2c56463bd781553bfc77',
+    appId: '1:352835275222:ios:2a4e484349bc28d83bfc77',
     messagingSenderId: '352835275222',
     projectId: 'task-manager-b0625',
+    databaseURL: 'https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'task-manager-b0625.appspot.com',
     iosBundleId: 'com.example.plannerFrontend',
   );

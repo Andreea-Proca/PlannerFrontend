@@ -1,13 +1,14 @@
 {
   "project_info": {
     "project_number": "352835275222",
+    "firebase_url": "https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "task-manager-b0625",
     "storage_bucket": "task-manager-b0625.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:352835275222:android:43b36aa36187aae93bfc77",
+        "mobilesdk_app_id": "1:352835275222:android:86ba92653f8f67e73bfc77",
         "android_client_info": {
           "package_name": "com.example.planner_frontend"
         }
