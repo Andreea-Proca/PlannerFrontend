@@ -1,3 +1,6 @@
+//import 'dart:ffi';
+
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Event {
@@ -6,8 +9,10 @@ class Event {
   late String title;
   late String priority;
   late String startTime;
+  late bool isCompleted;
 
-  Event(this.id, this.day, this.title, this.priority, this.startTime);
+  Event(this.id, this.day, this.title, this.priority, this.startTime,
+      this.isCompleted);
 
   // Convert a Message to a Map
   Map<String, dynamic> toMap() {
@@ -16,7 +21,8 @@ class Event {
       'day': day,
       'title': title,
       'priority': priority,
-      'startTime': startTime
+      'startTime': startTime,
+      'isCompleted': isCompleted,
     };
   }
 
@@ -27,5 +33,30 @@ class Event {
     title = map['title'];
     priority = map['priority'];
     startTime = map['startTime'];
+    isCompleted = checkBool(map['isCompleted']);
   }
+
+  bool checkBool(bool isCompleted) {
+    //print("iscompleted: $isCompleted");
+    return isCompleted;
+  }
+
+  // // Helper method to format TimeOfDay to String
+  // String _formatTimeOfDay(TimeOfDay timeOfDay) {
+  //   final now = DateTime.now();
+  //   final dateTime = DateTime(
+  //       now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+  //   return DateFormat.Hm().format(dateTime);
+  // }
+
+  // // Helper method to parse String to TimeOfDay
+  // TimeOfDay _parseTimeOfDay(String timeString) {
+  //   final List<String> parts = timeString.split(':');
+  //   TimeOfDay tod = TimeOfDay(
+  //     hour: int.parse(parts[0]),
+  //     minute: int.parse(parts[1]),
+  //   );
+  //   print("tod: $tod");
+  //   return tod;
+  // }
 }

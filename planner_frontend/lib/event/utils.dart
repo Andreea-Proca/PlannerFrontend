@@ -4,10 +4,11 @@
 import 'dart:collection';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'models/note.dart';
-import 'services/firebase_service.dart';
-import 'models/event.dart';
+import '../models/note.dart';
+import '../services/firebase_service.dart';
+import '../models/event.dart';
 
 /// Example event class.
 // class Event {
@@ -71,28 +72,16 @@ final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 Future<Map<DateTime, List<Event>>> getEventsMap() async {
   final yourEventService = FirebaseService();
   final events = await yourEventService.getEvents();
-  // print("events: ");
-  // print(events);
-  Map<DateTime, List<Event>> eventsMap = {};
-  //List<FBSEvent> eventsSync = [];
-  //events.then((value) => eventsSync = value);
 
-  // print("eventsSync: ");
-  // print(events);
+  Map<DateTime, List<Event>> eventsMap = {};
 
   for (var event in events) {
     DateTime eventDate = DateTime.parse(
         event.day); // Assuming startTime is a String in ISO 8601 format
-    // print(event.day);
+    // print("eventDate: $eventDate");
     eventsMap.putIfAbsent(eventDate, () => []);
     eventsMap[eventDate]?.add(event);
   }
-  // print("eventsMap :");
-  // print(eventsMap.values);
-  //print(eventsMap.keys);
-  // _kEventSource = eventsMap;
-  // print("k :");
-  // print(_kEventSource);
   return eventsMap;
 }
 

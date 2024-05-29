@@ -4,21 +4,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:planner_frontend/schedule_page.dart';
-import 'package:planner_frontend/utils.dart';
+import 'package:planner_frontend/event/schedule_page.dart';
+import 'package:planner_frontend/event/utils.dart';
 
-import 'models/event.dart';
-import 'services/firebase_service.dart';
+import '../models/event.dart';
+import '../services/firebase_service.dart';
 
-class BookingPage extends StatefulWidget {
+class AddEventPage extends StatefulWidget {
   final DateTime? selectedDay;
-  const BookingPage({Key? key, this.selectedDay}) : super(key: key);
+  const AddEventPage({Key? key, this.selectedDay}) : super(key: key);
 
   @override
-  State<BookingPage> createState() => _BookingPageState();
+  State<AddEventPage> createState() => _AddEventPageState();
 }
 
-class _BookingPageState extends State<BookingPage> {
+class _AddEventPageState extends State<AddEventPage> {
   final _formKey = GlobalKey<FormState>();
   final _wmNoController = TextEditingController();
   final _startHourController = TextEditingController();
@@ -156,7 +156,9 @@ class _BookingPageState extends State<BookingPage> {
                               selectedDay!.toIso8601String(),
                               _inputTitleController.text,
                               selectedPriority,
-                              selectedTime.toString());
+                              selectedTime.toString(),
+                              //selectedTime,
+                              false);
                           firebaseService.sendEvent(newEvent);
                           initializeKEvents();
                           Navigator.of(context).pop();

@@ -1,22 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:planner_frontend/mixinMethods.dart';
+import 'package:planner_frontend/note/mixinMethods.dart';
 import 'package:planner_frontend/services/firebase_service.dart';
-import 'package:planner_frontend/sticky_note.dart';
+import 'package:planner_frontend/note/sticky_note.dart';
 
-import 'models/note.dart';
+import '../models/note.dart';
 import 'sticky_note_container.dart';
 import 'sticky_note_container.dart';
-import 'widgets/nav_drawer.dart';
+import '../widgets/nav_drawer.dart';
 
-class ListsPage extends StatefulWidget {
-  const ListsPage({Key? key}) : super(key: key);
+class NotesPage extends StatefulWidget {
+  const NotesPage({Key? key}) : super(key: key);
 
   @override
-  State<ListsPage> createState() => _ListsPageState();
+  State<NotesPage> createState() => _NotesPageState();
 }
 
-class _ListsPageState extends State<ListsPage> with SharedMethods {
+class _NotesPageState extends State<NotesPage> with SharedMethods {
   final FirebaseService firebaseService = FirebaseService();
   // var notes = [];
   List<Note> notes = [];
@@ -36,10 +36,10 @@ class _ListsPageState extends State<ListsPage> with SharedMethods {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 153, 202, 155),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       drawer: const NavDrawer(),
       appBar: AppBar(
-        title: const Text('Move Container on Touch App'),
+        title: const Text('Notes'),
         backgroundColor: Color.fromARGB(255, 81, 164, 205),
       ),
       body: FutureBuilder<List<Note>>(

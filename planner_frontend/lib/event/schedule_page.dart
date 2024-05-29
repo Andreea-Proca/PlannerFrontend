@@ -2,15 +2,15 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:planner_frontend/booking_page.dart';
+import 'package:planner_frontend/event/add_event_page.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../utils.dart';
+import 'utils.dart';
 import 'edit_event_page.dart';
-import 'models/event.dart';
-import 'services/firebase_service.dart';
-import 'widgets/nav_drawer.dart';
+import '../models/event.dart';
+import '../services/firebase_service.dart';
+import '../widgets/nav_drawer.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({Key? key}) : super(key: key);
@@ -60,7 +60,8 @@ class _SchedulePageState extends State<SchedulePage> {
   List<Event> sortEvents(List<Event> events, String orderType) {
     switch (orderType) {
       case 'Name':
-        events.sort((a, b) => a.title.compareTo(b.title));
+        events.sort(
+            (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
         break;
       case 'Priority':
         events.sort((a, b) => a.priority.compareTo(b.priority));
@@ -156,7 +157,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       drawer: const NavDrawer(),
       appBar: AppBar(
-        title: const Text('TableCalendar - Events'),
+        title: const Text('Events'),
         backgroundColor: Color.fromARGB(255, 81, 164, 205),
       ),
       body: Column(
@@ -196,7 +197,7 @@ class _SchedulePageState extends State<SchedulePage> {
               SizedBox(
                 // widthFactor: widthFactor / 6,
                 //alignment: Alignment.topRight,
-                width: widthFactor * 250,
+                width: widthFactor * 200,
                 child: buildDropdownButton(_selectedEvents.value),
               ),
             ],
@@ -229,6 +230,8 @@ class _SchedulePageState extends State<SchedulePage> {
                             buildEditButton(value[index], context),
                             SizedBox(width: 8.0), // Add spacing between buttons
                             buildDeleteButton(value[index], context),
+                            SizedBox(width: 8.0),
+                            buildCheckbox(value[index], context),
                           ],
                         ),
                       ),
@@ -245,7 +248,7 @@ class _SchedulePageState extends State<SchedulePage> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return BookingPage(
+                  return AddEventPage(
                       selectedDay: _selectedDay); // Your page content goes here
                 },
               );
@@ -259,13 +262,14 @@ class _SchedulePageState extends State<SchedulePage> {
               padding:
                   const EdgeInsets.symmetric(vertical: 20.0, horizontal: 15.0),
             ),
-            child: const Text(
-              'Add event',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: const Icon(Icons.queue_rounded),
+            // child: const Text(
+            //   'Add event',
+            //   style: TextStyle(
+            //     fontSize: 20,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
           ),
         ],
       ),
@@ -392,4 +396,30 @@ class _SchedulePageState extends State<SchedulePage> {
         child: const Icon(Icons.edit));
   }
   // );
+
+  buildCheckbox(Event event, BuildContext context) {
+    return Checkbox(
+      value: event.isCompleted,
+      onChanged: (bool? value) {
+        setState(() {
+          event.isCompleted = !event.isCompleted;
+          firebaseService.updateEvent(event);
+          print('Checkbox value:  ${event.isCompleted} ');
+        });
+      },
+      activeColor: Colors.blue,
+      checkColor: Colors.white,
+      fillColor: MaterialStateProperty.resolveWith<Color>(
+        (Set<MaterialState> states) {
+          if (states.contains(MaterialState.hovered)) {
+            return Colors.blue.withOpacity(0.5);
+          }
+          if (states.contains(MaterialState.selected)) {
+            return Colors.blue.withOpacity(1); // Color when checked
+          }
+          return Colors.transparent;
+        },
+      ),
+    );
+  }
 }

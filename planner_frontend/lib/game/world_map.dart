@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tabPages/random_map.dart';
 import 'tabPages/supported_countries_map.dart';
-import 'widgets/nav_drawer.dart';
+import '../widgets/nav_drawer.dart';
 
 class WorldMapPage extends StatefulWidget {
   const WorldMapPage({Key? key}) : super(key: key);

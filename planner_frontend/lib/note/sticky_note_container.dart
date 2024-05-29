@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:planner_frontend/mixinMethods.dart';
+import 'package:planner_frontend/note/mixinMethods.dart';
 import 'package:planner_frontend/services/firebase_service.dart';
 
-import 'models/note.dart';
+import '../models/note.dart';
 import 'sticky_note.dart';
 
 class StickyNoteContainer extends StatefulWidget {
@@ -65,6 +65,7 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
       // mainAxisAlignment: MainAxisAlignment.center,
       // crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        buildCheckbox(note, context),
         Text(
           note.title,
           style: const TextStyle(
@@ -91,9 +92,9 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
               controller: ScrollController(),
               itemCount: note.items.length,
               itemBuilder: (context, index) {
-                Color tileColor = index.isEven
-                    ? const Color.fromARGB(255, 94, 159, 211)
-                    : const Color.fromARGB(255, 128, 198, 130);
+                // Color tileColor = index.isEven
+                //     ? const Color.fromARGB(255, 94, 159, 211)
+                //     : const Color.fromARGB(255, 128, 198, 130);
                 return ListTile(
                     title: Text(
                       note.items[index],
@@ -183,6 +184,19 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                                       note.title = _inputTitleController.text;
                                       note.dueDate = _dueDateController.text;
                                       note.items = items;
+                                      if (note.crossedDownList.length <
+                                          note.items.length) {
+                                        note.crossedDownList.addAll(
+                                            List.generate(
+                                                note.items.length -
+                                                    note.crossedDownList.length,
+                                                (index) => false));
+                                      } else if (note.crossedDownList.length >
+                                          note.items.length) {
+                                        note.crossedDownList = note
+                                            .crossedDownList
+                                            .sublist(0, note.items.length);
+                                      }
                                       firebaseService.updateNote(note);
                                       Navigator.of(context).pop();
                                     },
@@ -300,6 +314,32 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
           ),
         ]),
       ],
+    );
+  }
+
+  buildCheckbox(Note note, BuildContext context) {
+    return Checkbox(
+      value: note.isCompleted,
+      onChanged: (bool? value) {
+        setState(() {
+          note.isCompleted = !note.isCompleted;
+          firebaseService.updateNote(note);
+          print('Checkbox value:  ${note.isCompleted} ');
+        });
+      },
+      activeColor: Colors.blue,
+      checkColor: Colors.white,
+      fillColor: MaterialStateProperty.resolveWith<Color>(
+        (Set<MaterialState> states) {
+          if (states.contains(MaterialState.hovered)) {
+            return Colors.blue.withOpacity(0.5);
+          }
+          if (states.contains(MaterialState.selected)) {
+            return Colors.blue.withOpacity(1); // Color when checked
+          }
+          return Colors.transparent;
+        },
+      ),
     );
   }
 }

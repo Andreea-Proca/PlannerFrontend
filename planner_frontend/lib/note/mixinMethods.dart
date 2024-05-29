@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'models/note.dart';
-import 'services/firebase_service.dart';
+import '../models/note.dart';
+import '../services/firebase_service.dart';
 
 mixin SharedMethods {
   //late Note note = widget.note;
@@ -91,7 +91,8 @@ mixin SharedMethods {
                                     _inputTitleController.text,
                                     items,
                                     _dueDateController.text,
-                                    crossedDownList);
+                                    crossedDownList,
+                                    false);
                                 firebaseService.sendNote(newNote);
                                 Navigator.pop(context);
                               },

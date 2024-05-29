@@ -16,7 +16,7 @@ class NavDrawer extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 25),
             ),
             decoration: BoxDecoration(
-              color: Colors.green,
+              color: Color.fromARGB(255, 89, 89, 186),
               // image: DecorationImage(
               //     fit: BoxFit.fill,
               //     image: AssetImage('assets/images/bkgr.jpeg'))
@@ -51,7 +51,15 @@ class NavDrawer extends StatelessWidget {
             title: Text('Notes'),
             onTap: () => {
               Navigator.of(context).pop(),
-              Navigator.pushReplacementNamed(context, '/lists')
+              Navigator.pushReplacementNamed(context, '/notes')
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.task_alt_rounded),
+            title: Text('Tasks'),
+            onTap: () => {
+              Navigator.of(context).pop(),
+              Navigator.pushReplacementNamed(context, '/tasks')
             },
           ),
           ListTile(

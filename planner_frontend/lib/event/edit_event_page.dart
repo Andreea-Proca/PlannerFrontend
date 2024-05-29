@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:planner_frontend/schedule_page.dart';
-import 'package:planner_frontend/utils.dart';
+import 'package:planner_frontend/event/schedule_page.dart';
+import 'package:planner_frontend/event/utils.dart';
 
-import 'models/event.dart';
-import 'services/firebase_service.dart';
+import '../models/event.dart';
+import '../services/firebase_service.dart';
 
 class EditEventPage extends StatefulWidget {
   final DateTime? selectedDay;
@@ -42,6 +42,7 @@ class _EditEventPageState extends State<EditEventPage> {
   }
 
   late TimeOfDay selectedTime = parseTimeString(event.startTime);
+  //late TimeOfDay selectedTime = event.startTime;
 
   Future<void> _navigateTo(String routeName) async {
     Navigator.pushReplacementNamed(context, routeName);
@@ -171,6 +172,7 @@ class _EditEventPageState extends State<EditEventPage> {
                           //selectedDay!.toIso8601String(),
                           event.priority = selectedPriority;
                           event.startTime = selectedTime.toString();
+                          //event.startTime = selectedTime;
                           event.title = _inputTitleController.text;
                           firebaseService.updateEvent(event);
                           initializeKEvents();

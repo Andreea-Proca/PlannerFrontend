@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:planner_frontend/models/task.dart';
 
 import '../models/event.dart';
 import '../models/note.dart';
@@ -8,7 +9,12 @@ class FirebaseService {
 
   // Write a event to the database
   Future<void> sendEvent(Event event) async {
-    await _database.child('events').push().set(event.toMap());
+    //await _database.child('events').push().set(event.toMap());
+    DatabaseReference reference = _database.child('events');
+    DatabaseReference newEventRef = reference.push();
+    await newEventRef.set(event.toMap());
+    event.id = newEventRef.key!;
+    updateEvent(event);
   }
 
   // Write a note to the database
@@ -90,6 +96,47 @@ class FirebaseService {
       print(' deleted note: ${note.id}');
     } catch (e) {
       print('Error deleting note: $e');
+    }
+  }
+
+  // TASKS
+  // Write a note to the database
+  Future<void> sendTask(Task task) async {
+    // var result = await _database.child('notes').push().set(note.toMap());
+    DatabaseReference reference = _database.child('tasks');
+    DatabaseReference newTaskRef = reference.push();
+    await newTaskRef.set(task.toMap());
+    task.id = newTaskRef.key!;
+    updateTask(task);
+  }
+
+  // Write a note to the database
+  Future<void> updateTask(Task task) async {
+    await _database.child('tasks').child(task.id).update(task.toMap());
+  }
+
+  // Read notes from the database
+  Future<List<Task>> getTasks() async {
+    final snapshot = await _database.child('tasks').get();
+    List<Task> tasks = [];
+
+    if (snapshot.exists) {
+      Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+      // print(snapshot.value);
+
+      values.forEach((key, value) {
+        tasks.add(Task.fromMap(value));
+      });
+    }
+    return tasks;
+  }
+
+  Future<void> deleteTask(Task task) async {
+    try {
+      await _database.child('tasks').child(task.id).remove();
+      print(' deleted task: ${task.id}');
+    } catch (e) {
+      print('Error deleting task: $e');
     }
   }
 }

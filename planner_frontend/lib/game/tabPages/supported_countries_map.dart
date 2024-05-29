@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:countries_world_map/countries_world_map.dart';
 import 'package:countries_world_map/data/maps/world_map.dart';
 import 'package:flutter/material.dart';
+import 'package:planner_frontend/game/topics/topics.dart';
 
 class SupportedCountriesMap extends StatefulWidget {
   const SupportedCountriesMap({Key? key}) : super(key: key);
@@ -350,6 +351,17 @@ class _CountryPageState extends State<CountryPage> {
                       )),
               ],
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TopicsScreen(countryId: widget.country)),
+          );
+        },
+        child: const Icon(Icons.psychology_alt_rounded),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

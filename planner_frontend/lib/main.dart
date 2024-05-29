@@ -2,14 +2,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
+import 'package:planner_frontend/services/firestore.dart';
+import 'package:planner_frontend/game/topics/topics.dart';
 import 'dart:convert';
-import 'booking_page.dart';
+import 'event/add_event_page.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
 import 'home_page.dart';
-import 'schedule_page.dart';
-import 'lists_page.dart';
-import 'world_map.dart';
+import 'event/schedule_page.dart';
+import 'note/notes_page.dart';
+import 'game/world_map.dart';
+import 'game/quiz_page.dart';
+import 'profile.dart';
+import 'about.dart';
+import 'login.dart';
+import 'task/task_page.dart';
+import 'package:provider/provider.dart';
+import 'services/models.dart';
+// import 'package:planner_frontend/quiz/quiz_page.dart';
+
 // import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -34,6 +45,7 @@ Future<void> main() async {
       measurementId: 'G-EH7ER531SW',
     ),
   );
+
   runApp(const MyApp());
 }
 
@@ -70,24 +82,109 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //       title: 'Task Trove',
+  //       theme: ThemeData(
+  //         primarySwatch: Colors.blue,
+  //       ),
+  //       routes: {
+  //         '/login': (_) => const LoginPage(),
+  //         '/signup': (_) => const SignUpPage(),
+  //         '/home': (_) => const AuthGuard(protectedPage: HomePage()),
+  //         // '/dashboard': (_) => const Dashboard(),
+  //         '/add_event': (_) => const AuthGuard(protectedPage: AddEventPage()),
+  //         '/schedule': (_) => const SchedulePage(),
+  //         '/lists': (_) => const ListsPage(),
+  //         '/tasks': (_) => const TasksPage(),
+  //         '/world_map': (_) => const WorldMapPage(),
+  //         // '/quiz': (_) => const QuizPage(),
+  //         '/quiz': (_) => Provider(
+  //               create: (_) =>
+  //                   Report(), // Replace YourQuizModel with your actual model
+  //               child: const QuizPage(),
+  //             ),
+  //         //'/profile': (_) => const ProfileScreen(),
+  //         '/topics': (_) => Provider(
+  //             create: (_) =>
+  //                 Report(), // Replace YourQuizModel with your actual model
+  //             child: const TopicsScreen()),
+  //         '/profile': (_) => Provider(
+  //               create: (_) =>
+  //                   Report(), // Replace YourQuizModel with your actual model
+  //               child: const ProfileScreen(),
+  //             ),
+  //         '/about': (_) => const AboutScreen(),
+  //         '/login_screen': (_) => const LoginScreen(),
+  //       },
+  //       initialRoute: '/login',
+  //       home: const LoginPage());
+  // }
+
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Task Manager',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        routes: {
-          '/login': (_) => const LoginPage(),
-          '/signup': (_) => const SignUpPage(),
-          '/home': (_) => const AuthGuard(protectedPage: HomePage()),
-          // '/dashboard': (_) => const Dashboard(),
-          '/booking': (_) => const AuthGuard(protectedPage: BookingPage()),
-          '/schedule': (_) => const SchedulePage(),
-          '/lists': (_) => const ListsPage(),
-          '/world_map': (_) => const WorldMapPage(),
-        },
-        initialRoute: '/login',
-        home: const LoginPage());
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          // Error screen
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return StreamProvider(
+            create: (_) => FirestoreService().streamReport(),
+            catchError: (_, err) => Report(),
+            initialData: Report(),
+            child: MaterialApp(
+                title: 'Task Trove',
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                ),
+                routes: {
+                  '/login': (_) => const LoginPage(),
+                  '/signup': (_) => const SignUpPage(),
+                  '/home': (_) => const AuthGuard(protectedPage: HomePage()),
+                  // '/dashboard': (_) => const Dashboard(),
+                  '/add_event': (_) =>
+                      const AuthGuard(protectedPage: AddEventPage()),
+                  '/schedule': (_) => const SchedulePage(),
+                  '/notes': (_) => const NotesPage(),
+                  '/tasks': (_) => const TasksPage(),
+                  '/world_map': (_) => const WorldMapPage(),
+                  '/quiz': (_) => const QuizPage(),
+                  // '/quiz': (_) => Provider(
+                  //       create: (_) =>
+                  //           Report(), // Replace YourQuizModel with your actual model
+                  //       child: const QuizPage(),
+                  //     ),
+                  '/profile': (_) => const ProfileScreen(),
+                  '/topics': (_) => const TopicsScreen(countryId: "all"),
+                  // '/topics': (_) => Provider(
+                  //     create: (_) =>
+                  //         Report(), // Replace YourQuizModel with your actual model
+                  //     child: const TopicsScreen()),
+                  // '/profile': (_) => Provider(
+                  //       create: (_) =>
+                  //           Report(), // Replace YourQuizModel with your actual model
+                  //       child: const ProfileScreen(),
+                  //     ),
+                  '/about': (_) => const AboutScreen(),
+                  '/login_screen': (_) => const LoginScreen(),
+                },
+                initialRoute: '/login',
+                home: const LoginPage()),
+          );
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return const MaterialApp();
+      },
+    );
   }
 }
