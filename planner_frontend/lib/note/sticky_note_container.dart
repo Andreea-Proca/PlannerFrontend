@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:planner_frontend/note/mixinMethods.dart';
 import 'package:planner_frontend/services/firebase_service.dart';
+import 'package:planner_frontend/services/firestore.dart';
 
 import '../models/note.dart';
 import 'sticky_note.dart';
@@ -19,6 +20,7 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
   late Note note = widget.note;
   int selectedTileIndex = -1;
   final FirebaseService firebaseService = FirebaseService();
+  final FirestoreService firestoreService = FirestoreService();
   final _dueDateController = TextEditingController();
   final _inputTitleController = TextEditingController();
   final _itemListController = TextEditingController();
@@ -31,8 +33,8 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
         color: const Color.fromRGBO(255, 0, 0, 0),
         child: Center(
             child: SizedBox(
-                width: 350,
-                height: 350,
+                width: 325,
+                height: 325,
                 child: Container(
                     color: const Color.fromRGBO(255, 0, 0, 0),
                     child: StickyNote(child: buildList())))));
@@ -77,7 +79,7 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
           'Due ${note.dueDate}',
           style: const TextStyle(
             fontSize: 15,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
             fontStyle: FontStyle.italic,
           ),
         ),
@@ -106,8 +108,7 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                               ? Colors
                                   .grey // You can set a different color when the text is crossed out
                               : Colors.black,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold),
+                          fontSize: 17),
                     ),
                     enabled: true,
                     onTap: () {
@@ -140,10 +141,11 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                         double widthFactor = screenSize.width > 800
                             ? 0.5
                             : (screenSize.width > 600 ? 0.75 : 0.95);
+
                         return AlertDialog(
                           scrollable: true,
-                          backgroundColor: Color.fromARGB(255, 163, 204, 120),
-                          title: const Text('Edit your note'),
+                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                          //title: const Text('Edit note'),
                           content: Padding(
                             padding: const EdgeInsets.all(20.0),
                             // child: Form(
@@ -151,29 +153,39 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 const SizedBox(height: 20.0),
+                                const Text(
+                                  'Edit note',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 40.0),
                                 FractionallySizedBox(
-                                  widthFactor: widthFactor,
+                                  widthFactor: widthFactor * 1.2,
                                   child: buildTextField(_inputTitleController,
                                       'Title', '', note.title),
                                 ),
                                 const SizedBox(height: 20.0),
                                 FractionallySizedBox(
-                                  widthFactor: widthFactor,
+                                  widthFactor: widthFactor * 1.2,
                                   child: buildTextField(_dueDateController,
                                       'Due date', 'dd/mm/yyyy', note.dueDate),
                                 ),
                                 const SizedBox(height: 20.0),
                                 FractionallySizedBox(
-                                  widthFactor: widthFactor,
+                                  widthFactor: widthFactor * 1.2,
                                   child: buildTextField(
                                       _itemListController,
                                       'Items',
                                       'Write list\'s items separated by a commma',
                                       note.items.join(', ')),
                                 ),
-                                const SizedBox(height: 20.0),
+                                const SizedBox(height: 40.0),
                                 FractionallySizedBox(
-                                  widthFactor: widthFactor,
+                                  widthFactor: widthFactor * 1.2,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       List<String> items = _itemListController
@@ -207,9 +219,10 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                                           vertical: 15.0),
                                     ),
                                     child: const Text(
-                                      'Save the note',
+                                      'Save changes',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0),
                                     ),
                                   ),
                                 ),
@@ -223,7 +236,8 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.black,
                     backgroundColor: const Color(0xFFB6D0E2),
-                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 10.0),
                   ),
                   child: const Icon(Icons.edit),
                 );
@@ -246,7 +260,7 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                             : (screenSize.width > 600 ? 0.75 : 0.95);
                         return AlertDialog(
                           scrollable: true,
-                          backgroundColor: Color.fromARGB(255, 163, 204, 120),
+                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
                           title: Text(
                               'Are you sure you want to delete this note?'),
                           content: Padding(
@@ -305,7 +319,8 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.black,
                     backgroundColor: const Color(0xFFB6D0E2),
-                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 10.0),
                   ),
                   child: const Icon(Icons.delete),
                 );
@@ -324,6 +339,10 @@ class _StickyNoteContainerState extends State<StickyNoteContainer> {
         setState(() {
           note.isCompleted = !note.isCompleted;
           firebaseService.updateNote(note);
+          if (note.isCompleted)
+            firestoreService.updateUserNETReport("notes", 1);
+          else
+            firestoreService.updateUserNETReport("notes", -1);
           print('Checkbox value:  ${note.isCompleted} ');
         });
       },

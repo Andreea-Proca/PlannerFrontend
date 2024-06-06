@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            'Conectare',
+                            'Login',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 24.0,
@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                           buildTextField(
                               _emailController, 'E-mail', AutofillHints.email),
                           const SizedBox(height: 20.0),
-                          buildTextField(_passwordController, 'Parola',
+                          buildTextField(_passwordController, 'Password',
                               AutofillHints.password,
                               obscureText: true),
                           const SizedBox(height: 20.0),
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                                   const EdgeInsets.symmetric(vertical: 15.0),
                             ),
                             child: const Text(
-                              'Conectare',
+                              'Log in',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                                   const EdgeInsets.symmetric(vertical: 15.0),
                             ),
                             child: const Text(
-                              'Înregistrare',
+                              'Register',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),

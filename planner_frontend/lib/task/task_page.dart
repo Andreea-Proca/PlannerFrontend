@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planner_frontend/event/add_event_page.dart';
 import 'package:planner_frontend/models/task.dart';
+import 'package:planner_frontend/services/firestore.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -31,6 +32,7 @@ class _TasksPageState extends State<TasksPage> {
   // DateTime? _rangeStart;
   // DateTime? _rangeEnd;
   FirebaseService firebaseService = FirebaseService();
+  FirestoreService firestoreService = FirestoreService();
 
   String selectedOrderType = 'DueTime';
   List<String> orderTypes = ['Title', 'Priority', 'DueTime'];
@@ -39,6 +41,7 @@ class _TasksPageState extends State<TasksPage> {
   //List<String> subtasks = [];
   // List<bool> showSubtasks = [];
   List<bool> showSubtasks = List.generate(100, (index) => false);
+  List<bool> showButtons = List.generate(100, (index) => false);
   //List.generate(subtasks.length, (index) => false);
 
   @override
@@ -135,22 +138,23 @@ class _TasksPageState extends State<TasksPage> {
       drawer: const NavDrawer(),
       appBar: AppBar(
         title: const Text('Tasks'),
-        backgroundColor: Color.fromARGB(255, 81, 164, 205),
+        backgroundColor: Color(0xFF00B4D8),
       ),
       body: Column(
         children: [
           const SizedBox(height: 30.0),
-          Row(
-            children: [
-              SizedBox(height: 0.0, width: widthFactor * 3000),
-              SizedBox(
-                // widthFactor: widthFactor / 6,
-                //alignment: Alignment.topRight,
-                width: widthFactor * 250,
+          Container(
+              width: screenSize.width > 800
+                  ? screenSize.width / 6
+                  : screenSize.width / 3,
+              margin: EdgeInsets.only(
+                  left: screenSize.width > 800
+                      ? widthFactor * 2500
+                      : widthFactor * 250),
+              child: Align(
+                alignment: Alignment.topRight,
                 child: buildDropdownButton(tasks),
-              ),
-            ],
-          ),
+              )),
           const SizedBox(height: 15.0),
           Expanded(
             child: FutureBuilder<List<Task>>(
@@ -164,7 +168,7 @@ class _TasksPageState extends State<TasksPage> {
                   return Text('Error: ${snapshot.error}');
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   // Show a message if no data is available
-                  return Text('No notes available.');
+                  return Text('No tasks available.');
                 } else {
                   List<Task> tasks = snapshot.data!;
                   //showSubtasks = List.generate(tasks.length, (index) => false);
@@ -192,71 +196,68 @@ class _TasksPageState extends State<TasksPage> {
                                 },
                                 title: Text(
                                   '${tasks[index].title} | Due date & time: ${tasks[index].dueDate.substring(0, 10)}, ${tasks[index].dueTime.substring(10, 15)}',
-                                  // style: TextStyle(
-                                  //     decoration:
-                                  //         tasks[index].completedSubtasks[index]
-                                  //             ? TextDecoration.lineThrough
-                                  //             : TextDecoration.none,
-                                  //     color: tasks[index]
-                                  //             .completedSubtasks[index]
-                                  //         ? Colors
-                                  //             .grey // You can set a different color when the text is crossed out
-                                  //         : Colors.black,
-                                  //     fontSize: 17,
-                                  //     fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      // decoration:
+                                      //     tasks[index].completedSubtasks[index]
+                                      //         ? TextDecoration.lineThrough
+                                      //         : TextDecoration.none,
+                                      color: tasks[index].isCompleted
+                                          ? Colors
+                                              .grey // You can set a different color when the text is crossed out
+                                          : Colors.black,
+                                      fontSize: 17),
                                 ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    buildEditButton(tasks[index], context),
-                                    SizedBox(width: 8.0),
-                                    buildDeleteButton(tasks[index], context),
-                                    SizedBox(width: 8.0),
-                                    buildShowSubtasksButton(
-                                        tasks[index], index, context),
-                                    SizedBox(width: 8.0),
-                                    buildCheckbox(tasks[index], context),
-                                    // Checkbox(
-                                    //   value: tasks[index].isCompleted,
-                                    //   onChanged: (bool? value) {
-                                    //     setState(() {
-                                    //       tasks[index].isCompleted =
-                                    //           !tasks[index].isCompleted;
-                                    //       firebaseService
-                                    //           .updateTask(tasks[index]);
-                                    //       print(
-                                    //           'Checkbox value:  ${tasks[index].isCompleted} ');
-                                    //     });
-                                    //   },
-                                    //   activeColor: Colors.blue,
-                                    //   checkColor: Colors.white,
-                                    //   fillColor: MaterialStateProperty
-                                    //       .resolveWith<Color>(
-                                    //     (Set<MaterialState> states) {
-                                    //       if (states.contains(
-                                    //           MaterialState.hovered)) {
-                                    //         return Colors.blue.withOpacity(0.5);
-                                    //       }
-                                    //       if (states.contains(
-                                    //           MaterialState.selected)) {
-                                    //         return Colors.blue.withOpacity(
-                                    //             1); // Color when checked
-                                    //       }
-                                    //       return Colors.transparent;
-                                    //     },
-                                    //   ),
-                                    // ),
-                                  ],
-                                ),
+                                leading: buildCheckbox(tasks[index], context),
+                                trailing:
+                                    // Row(
+                                    //   mainAxisSize: MainAxisSize.min,
+                                    //   children: [
+                                    screenSize.width > 800
+                                        ? Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              buildEditButton(
+                                                  tasks[index], context),
+                                              SizedBox(width: 8.0),
+                                              buildDeleteButton(
+                                                  tasks[index], context),
+                                              SizedBox(width: 8.0),
+                                              buildShowSubtasksButton(
+                                                  tasks[index], index, context),
+                                            ],
+                                          )
+                                        : ElevatedButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                showButtons[index] =
+                                                    !showButtons[index];
+                                              });
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              foregroundColor: Colors.black,
+                                              backgroundColor:
+                                                  const Color(0xFFB6D0E2),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 15.0),
+                                            ),
+                                            child: showButtons[index] == true
+                                                ? const Icon(
+                                                    Icons.arrow_drop_up_rounded)
+                                                : const Icon(Icons
+                                                    .arrow_drop_down_rounded),
+                                          ),
                               ),
                             ),
+                            if (showButtons[index] == true)
+                              buildDropdownMenu(tasks[index], index, context)
+                            else
+                              SizedBox(height: 0.0),
                             ///////////////////////////////////////////SUBTASKS
                             if (showSubtasks[index] == true)
                               buildSubtasks(tasks[index], index, context)
                             else
-                              Container(
-                                child: Text("gol"),
-                              ),
+                              SizedBox(height: 0.0),
                           ]);
                     },
                   );
@@ -336,7 +337,7 @@ class _TasksPageState extends State<TasksPage> {
                 : (screenSize.width > 600 ? 0.75 : 0.95);
             return AlertDialog(
               scrollable: true,
-              backgroundColor: Color.fromARGB(255, 161, 197, 123),
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
               title: Text('Are you sure you want to delete this task?'),
               content: Padding(
                 padding: EdgeInsets.all(20.0),
@@ -411,7 +412,7 @@ class _TasksPageState extends State<TasksPage> {
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.black,
           backgroundColor: const Color(0xFFB6D0E2),
-          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
         ),
         child: const Icon(Icons.edit));
   }
@@ -430,22 +431,27 @@ class _TasksPageState extends State<TasksPage> {
         backgroundColor: const Color(0xFFB6D0E2),
         padding: const EdgeInsets.symmetric(vertical: 5.0),
       ),
-      child: showSubtasks[index] == true
-          ? const Icon(Icons.arrow_drop_up_rounded)
-          : const Icon(Icons.arrow_drop_down_rounded),
+      // child: showSubtasks[index] == true
+      //     ? const Icon(Icons.arrow_drop_up_rounded)
+      //     : const Icon(Icons.arrow_drop_down_rounded),
+      child: const Icon(Icons.list_alt_rounded),
     );
   }
 
   Widget buildSubtasks(Task task, int index, BuildContext context) {
     print(showSubtasks[index]);
+    Size screenSize = MediaQuery.of(context).size;
+    double widthFactor =
+        screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
+
     return Container(
       alignment: Alignment.topRight,
       // width: 400,
       height: showSubtasks[index] ? 200 : 0,
       //height: 200,
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 100),
-      margin: const EdgeInsets.symmetric(
-        horizontal: 500.0,
+      //padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 100),
+      margin: EdgeInsets.symmetric(
+        horizontal: widthFactor * 75.0,
         vertical: 4.0,
       ),
       child: ListView.builder(
@@ -482,8 +488,7 @@ class _TasksPageState extends State<TasksPage> {
                           ? Colors
                               .grey // You can set a different color when the text is crossed out
                           : Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold),
+                      fontSize: 17),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -511,6 +516,10 @@ class _TasksPageState extends State<TasksPage> {
         setState(() {
           task.isCompleted = !task.isCompleted;
           firebaseService.updateTask(task);
+          if (task.isCompleted)
+            firestoreService.updateUserNETReport("tasks", 1);
+          else
+            firestoreService.updateUserNETReport("tasks", -1);
           print('Checkbox value:  ${task.isCompleted} ');
         });
       },
@@ -526,6 +535,26 @@ class _TasksPageState extends State<TasksPage> {
           }
           return Colors.transparent;
         },
+      ),
+    );
+  }
+
+  Widget buildDropdownMenu(Task task, int index, BuildContext context) {
+    return Container(
+      alignment: Alignment.topRight,
+      //height: showSubtasks[index] ? 200 : 0,
+      //height: 200,
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 25),
+      //margin: const EdgeInsets.symmetric(horizontal: 500.0, vertical: 4.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          buildEditButton(task, context),
+          SizedBox(width: 8.0),
+          buildDeleteButton(task, context),
+          SizedBox(width: 8.0),
+          buildShowSubtasksButton(task, index, context),
+        ],
       ),
     );
   }

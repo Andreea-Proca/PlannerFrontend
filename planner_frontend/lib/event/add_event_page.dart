@@ -12,7 +12,9 @@ import '../services/firebase_service.dart';
 
 class AddEventPage extends StatefulWidget {
   final DateTime? selectedDay;
-  const AddEventPage({Key? key, this.selectedDay}) : super(key: key);
+  final Size? screenSize;
+  const AddEventPage({Key? key, this.selectedDay, this.screenSize})
+      : super(key: key);
 
   @override
   State<AddEventPage> createState() => _AddEventPageState();
@@ -28,6 +30,7 @@ class _AddEventPageState extends State<AddEventPage> {
   TimeOfDay selectedTime = TimeOfDay.now();
   String inputTitle = '';
   late DateTime? selectedDay = widget.selectedDay;
+  late Size? screenSize = widget.screenSize;
   final FirebaseService firebaseService = FirebaseService();
 
   Future<void> _navigateTo(String routeName) async {
@@ -83,140 +86,113 @@ class _AddEventPageState extends State<AddEventPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
+    //Size screenSize = MediaQuery.of(context).size;
     double widthFactor =
-        screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
-
-    return Dialog(
-      child: Container(
-        width: 500, // Set the width of the Scaffold
-        height: 600, // Set the height of the Scaffold
-        child: Scaffold(
-          backgroundColor: Color.fromARGB(255, 161, 197, 123),
-          appBar: AppBar(
-            title: const Text('Add events'),
-          ),
-          body: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Add an event',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
+        screenSize!.width > 800 ? 0.5 : (screenSize!.width > 600 ? 0.75 : 0.95);
+    print(screenSize!.width);
+    return AlertDialog(
+      scrollable: true,
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      //title: const Text('Create new list'),
+      content:
+          // return Dialog(
+          //   child: Container(
+          //     width: widthFactor * 800,
+          //     height: widthFactor * 900,
+          //     decoration: BoxDecoration(
+          //         color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+          //     child: Scaffold(
+          //       backgroundColor: Colors.transparent,
+          //       //appBar: AppBar(
+          //       // title: const Text('Add events'),
+          //       // ),
+          //       body: Center(
+          //         child: ConstrainedBox(
+          //           constraints: const BoxConstraints(maxWidth: 800),
+          //           child:
+          Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20.0),
+            const Text(
+              'Add a new event',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 40.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: buildTextField(_inputTitleController, 'Event\'s title'),
+            ),
+            const SizedBox(height: 20.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: buildDropdownButton(),
+            ),
+            const SizedBox(height: 20.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: GestureDetector(
+                onTap: () => _selectTime(context),
+                child: AbsorbPointer(
+                  child: TextField(
+                    controller: TextEditingController(
+                        text: selectedTime.format(context)),
+                    decoration: const InputDecoration(
+                      labelText: 'Start time',
+                      labelStyle: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                      border: OutlineInputBorder(),
                     ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: buildTextField(
-                          _inputTitleController, 'Event\'s title'),
-                    ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: buildDropdownButton(),
-                    ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: GestureDetector(
-                        onTap: () => _selectTime(context),
-                        child: AbsorbPointer(
-                          child: TextField(
-                            controller: TextEditingController(
-                                text: selectedTime.format(context)),
-                            decoration: const InputDecoration(
-                              labelText: 'Start time',
-                              labelStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Message newMessage =
-                          //     Message('Hello from Flutter!', '1', '20:50');
-                          Event newEvent = Event(
-                              '',
-                              selectedDay!.toIso8601String(),
-                              _inputTitleController.text,
-                              selectedPriority,
-                              selectedTime.toString(),
-                              //selectedTime,
-                              false);
-                          firebaseService.sendEvent(newEvent);
-                          initializeKEvents();
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.black,
-                          backgroundColor: const Color(0xFFB6D0E2),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        ),
-                        child: const Text(
-                          'Add the event',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20.0), ////////////////////////////
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          firebaseService.getEvents();
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.black,
-                          backgroundColor: const Color(0xFFB6D0E2),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        ),
-                        child: const Text(
-                          'Show events',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ), ///////////////////////////////////////////////
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: ElevatedButton(
-                        onPressed: () => _navigateTo('/home'),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.black,
-                          backgroundColor: const Color(0xFFB6D0E2),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        ),
-                        child: const Text(
-                          'Back to Home Page',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            const SizedBox(height: 40.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Message newMessage =
+                  //     Message('Hello from Flutter!', '1', '20:50');
+                  Event newEvent = Event(
+                      '',
+                      selectedDay!.toIso8601String(),
+                      _inputTitleController.text,
+                      selectedPriority,
+                      selectedTime.toString(),
+                      //selectedTime,
+                      false,
+                      "");
+                  firebaseService.sendEvent(newEvent);
+                  initializeKEvents();
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  backgroundColor: const Color(0xFFB6D0E2),
+                  padding: const EdgeInsets.symmetric(vertical: 15.0),
+                ),
+                child: const Text(
+                  'Save event',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget buildDropdownButton() {

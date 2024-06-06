@@ -27,6 +27,8 @@ class QuizScreen extends StatelessWidget {
 
             return Scaffold(
               appBar: AppBar(
+                iconTheme: const IconThemeData(color: Colors.white),
+                backgroundColor: Colors.deepPurple,
                 title: AnimatedProgressbar(value: state.progress),
                 leading: IconButton(
                   icon: const Icon(FontAwesomeIcons.xmark),
@@ -70,16 +72,40 @@ class StartPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(quiz.title, style: Theme.of(context).textTheme.headline4),
+          Text(quiz.title,
+              //style: Theme.of(context).textTheme.headline4
+              // style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold, color: Colors.black)),
           const Divider(),
-          Expanded(child: Text(quiz.description)),
+          //Expanded(child: Text(quiz.description)),
+          Text(quiz.description),
+          const Divider(),
+          Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/giphy.gif'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          const Divider(),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               ElevatedButton.icon(
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    fixedSize: Size(150, 50)),
                 onPressed: state.nextPage,
-                label: const Text('Start Quiz!'),
-                icon: const Icon(Icons.poll),
+                label: Text('Start Quiz!',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.white)),
+                icon: const Icon(Icons.poll, color: Colors.white),
               )
             ],
           )
@@ -100,19 +126,22 @@ class CongratsPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Congrats! You completed the ${quiz.title} quiz',
-            textAlign: TextAlign.center,
-          ),
+          Text('Congrats! You completed the ${quiz.title} quiz!',
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold, color: Colors.black)),
           const Divider(),
           Image.asset('assets/congrats.gif'),
           const Divider(),
           ElevatedButton.icon(
             style: TextButton.styleFrom(
-              backgroundColor: Colors.green,
-            ),
-            icon: const Icon(FontAwesomeIcons.check),
-            label: const Text(' Mark Complete!'),
+                backgroundColor: Colors.green, fixedSize: Size(200, 50)),
+            icon: const Icon(FontAwesomeIcons.check, color: Colors.white),
+            label: Text(' Mark Complete!',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.white)),
             onPressed: () {
               FirestoreService().updateUserReport(quiz);
               Navigator.pushNamedAndRemoveUntil(
@@ -136,14 +165,34 @@ class QuestionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var state = Provider.of<QuizState>(context);
 
+    Size screenSize = MediaQuery.of(context).size;
+    double widthFactor =
+        screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Expanded(
           child: Container(
+            width: widthFactor * 1600,
+            height: widthFactor * 200,
+            constraints: const BoxConstraints(maxHeight: 400),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 239, 235, 219),
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
             padding: const EdgeInsets.all(16),
             alignment: Alignment.center,
-            child: Text(question.text),
+            child: Text(question.text,
+                style: Theme.of(context).textTheme.headline4),
           ),
         ),
         Container(
@@ -154,7 +203,19 @@ class QuestionPage extends StatelessWidget {
               return Container(
                 height: 90,
                 margin: const EdgeInsets.only(bottom: 10),
-                color: Colors.black26,
+                // color: Colors.deepPurple,
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
                 child: InkWell(
                   onTap: () {
                     state.selected = opt;
@@ -168,14 +229,17 @@ class QuestionPage extends StatelessWidget {
                             state.selected == opt
                                 ? FontAwesomeIcons.circleCheck
                                 : FontAwesomeIcons.circle,
-                            size: 30),
+                            size: 30,
+                            color: Colors.white),
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.only(left: 16),
-                            child: Text(
-                              opt.value,
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
+                            child: Text(opt.value,
+                                //style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(color: Colors.white)),
                           ),
                         )
                       ],

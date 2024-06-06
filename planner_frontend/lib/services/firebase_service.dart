@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:planner_frontend/models/task.dart';
 
@@ -6,18 +7,22 @@ import '../models/note.dart';
 
 class FirebaseService {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  User? user = FirebaseAuth.instance.currentUser;
 
-  // Write a event to the database
+  //EVENT
+  // Write an event to the database
   Future<void> sendEvent(Event event) async {
-    //await _database.child('events').push().set(event.toMap());
     DatabaseReference reference = _database.child('events');
     DatabaseReference newEventRef = reference.push();
     await newEventRef.set(event.toMap());
     event.id = newEventRef.key!;
+    if (user != null) {
+      event.userId = user!.uid;
+    }
     updateEvent(event);
   }
 
-  // Write a note to the database
+  // Write an event to the database
   Future<void> updateEvent(Event event) async {
     await _database.child('events').child(event.id).update(event.toMap());
   }
@@ -25,16 +30,28 @@ class FirebaseService {
   // Read events from the database
   Future<List<Event>> getEvents() async {
     final snapshot = await _database.child('events').get();
-    List<Event> events = [];
+    // List<Event> events = [];
 
-    if (snapshot.exists) {
-      Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
-      // print(snapshot.value);
+    // if (snapshot.exists) {
+    //   Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
 
-      values.forEach((key, value) {
-        events.add(Event.fromMap(value));
-      });
-    }
+    //   values.forEach((key, value) {
+    //     if (user!.uid == value['userId']) events.add(Event.fromMap(value));
+    //   });
+    // }
+
+    final dynamic snapshotValue = snapshot.value;
+    final Map<Object?, Object?> values = snapshotValue;
+    final List<Event> events = [];
+
+    values.forEach((key, value) {
+      if (value is Map<Object?, Object?>) {
+        final String? userId = value['userId'] as String?;
+        if (userId != null && user?.uid == userId) {
+          events.add(Event.fromMap(value.cast<String, dynamic>()));
+        }
+      }
+    });
 
     return events;
   }
@@ -56,6 +73,9 @@ class FirebaseService {
     DatabaseReference newNoteRef = reference.push();
     await newNoteRef.set(note.toMap());
     note.id = newNoteRef.key!;
+    if (user != null) {
+      note.userId = user!.uid;
+    }
     updateNote(note);
   }
 
@@ -67,26 +87,30 @@ class FirebaseService {
   // Read notes from the database
   Future<List<Note>> getNotes() async {
     final snapshot = await _database.child('notes').get();
-    List<Note> notes = [];
+    // List<Note> notes = [];
 
-    if (snapshot.exists) {
-      Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
-      // print(snapshot.value);
+    // if (snapshot.exists) {
+    //   Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+    //   // print(snapshot.value);
 
-      values.forEach((key, value) {
-        notes.add(Note.fromMap(value));
-      });
-    }
+    //   values.forEach((key, value) {
+    //     if (user!.uid == value['userId']) notes.add(Note.fromMap(value));
+    //   });
+    //}
 
-    // for (var element in events) {
-    //   print(element.day +
-    //       ", " +
-    //       element.title +
-    //       ", " +
-    //       element.priority +
-    //       ", " +
-    //       element.startTime);
-    // }
+    final dynamic snapshotValue = snapshot.value;
+    final Map<Object?, Object?> values = snapshotValue;
+    final List<Note> notes = [];
+
+    values.forEach((key, value) {
+      if (value is Map<Object?, Object?>) {
+        final String? userId = value['userId'] as String?;
+        if (userId != null && user?.uid == userId) {
+          notes.add(Note.fromMap(value.cast<String, dynamic>()));
+        }
+      }
+    });
+
     return notes;
   }
 
@@ -107,6 +131,9 @@ class FirebaseService {
     DatabaseReference newTaskRef = reference.push();
     await newTaskRef.set(task.toMap());
     task.id = newTaskRef.key!;
+    if (user != null) {
+      task.userId = user!.uid;
+    }
     updateTask(task);
   }
 
@@ -118,16 +145,30 @@ class FirebaseService {
   // Read notes from the database
   Future<List<Task>> getTasks() async {
     final snapshot = await _database.child('tasks').get();
-    List<Task> tasks = [];
+    //List<Task> tasks = [];
 
-    if (snapshot.exists) {
-      Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
-      // print(snapshot.value);
+    // if (snapshot.exists) {
+    //   Map<dynamic, dynamic> values = snapshot.value as Map<dynamic, dynamic>;
+    //   // print(snapshot.value);
 
-      values.forEach((key, value) {
-        tasks.add(Task.fromMap(value));
-      });
-    }
+    //   values.forEach((key, value) {
+    //     if (user!.uid == value['userId']) tasks.add(Task.fromMap(value));
+    //   });
+    // }
+
+    final dynamic snapshotValue = snapshot.value;
+    final Map<Object?, Object?> values = snapshotValue;
+    final List<Task> tasks = [];
+
+    values.forEach((key, value) {
+      if (value is Map<Object?, Object?>) {
+        final String? userId = value['userId'] as String?;
+        if (userId != null && user?.uid == userId) {
+          tasks.add(Task.fromMap(value.cast<String, dynamic>()));
+        }
+      }
+    });
+
     return tasks;
   }
 

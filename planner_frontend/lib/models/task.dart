@@ -10,9 +10,19 @@ class Task {
   late List<String> subtasks;
   late List<bool> completedSubtasks;
   late bool isCompleted;
+  late String userId;
 
-  Task(this.id, this.title, this.description, this.priority, this.dueDate,
-      this.dueTime, this.subtasks, this.completedSubtasks, this.isCompleted);
+  Task(
+      this.id,
+      this.title,
+      this.description,
+      this.priority,
+      this.dueDate,
+      this.dueTime,
+      this.subtasks,
+      this.completedSubtasks,
+      this.isCompleted,
+      this.userId);
 
   // Convert a Message to a Map
   Map<String, dynamic> toMap() {
@@ -26,6 +36,7 @@ class Task {
       'subtasks': subtasks,
       'completedSubtasks': completedSubtasks,
       'isCompleted': isCompleted,
+      'userId': userId,
     };
   }
 
@@ -40,5 +51,6 @@ class Task {
     subtasks = List<String>.from(map['subtasks'] ?? []);
     completedSubtasks = List<bool>.from(map['completedSubtasks'] ?? []);
     isCompleted = map['isCompleted'];
+    userId = map['userId'];
   }
 }

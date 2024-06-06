@@ -3,6 +3,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planner_frontend/event/add_event_page.dart';
+import 'package:planner_frontend/services/firestore.dart';
+import 'package:planner_frontend/services/models.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -29,6 +32,7 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
   FirebaseService firebaseService = FirebaseService();
+  FirestoreService firestoreService = FirestoreService();
 
   String selectedOrderType = 'Date';
   List<String> orderTypes = ['Name', 'Priority', 'Time', 'Date'];
@@ -153,12 +157,12 @@ class _SchedulePageState extends State<SchedulePage> {
     Size screenSize = MediaQuery.of(context).size;
     double widthFactor =
         screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
-
+    print(screenSize.width);
     return Scaffold(
       drawer: const NavDrawer(),
       appBar: AppBar(
         title: const Text('Events'),
-        backgroundColor: Color.fromARGB(255, 81, 164, 205),
+        backgroundColor: Color(0xFF00B4D8),
       ),
       body: Column(
         children: [
@@ -191,17 +195,20 @@ class _SchedulePageState extends State<SchedulePage> {
             },
           ),
           const SizedBox(height: 15.0),
-          Row(
-            children: [
-              SizedBox(height: 0.0, width: widthFactor * 3250),
-              SizedBox(
-                // widthFactor: widthFactor / 6,
-                //alignment: Alignment.topRight,
-                width: widthFactor * 200,
+          Container(
+              width: screenSize.width > 800
+                  ? screenSize.width / 6
+                  : screenSize.width / 3,
+              margin: EdgeInsets.only(
+                  left: screenSize.width > 800
+                      ? widthFactor * 2500
+                      : widthFactor * 250),
+              child: Align(
+                alignment: Alignment.topRight,
                 child: buildDropdownButton(_selectedEvents.value),
-              ),
-            ],
-          ),
+              )),
+          //  ],
+          // ),
           const SizedBox(height: 15.0),
           Expanded(
             child: ValueListenableBuilder<List<Event>>(
@@ -249,7 +256,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AddEventPage(
-                      selectedDay: _selectedDay); // Your page content goes here
+                      selectedDay: _selectedDay, screenSize: screenSize);
                 },
               );
             },
@@ -314,7 +321,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 : (screenSize.width > 600 ? 0.75 : 0.95);
             return AlertDialog(
               scrollable: true,
-              backgroundColor: Color.fromARGB(255, 161, 197, 123),
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
               title: Text('Are you sure you want to delete this event?'),
               content: Padding(
                 padding: EdgeInsets.all(20.0),
@@ -404,6 +411,10 @@ class _SchedulePageState extends State<SchedulePage> {
         setState(() {
           event.isCompleted = !event.isCompleted;
           firebaseService.updateEvent(event);
+          if (event.isCompleted)
+            firestoreService.updateUserNETReport("events", 1);
+          else
+            firestoreService.updateUserNETReport("events", -1);
           print('Checkbox value:  ${event.isCompleted} ');
         });
       },

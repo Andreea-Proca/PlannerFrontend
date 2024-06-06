@@ -16,8 +16,13 @@ class _WorldMapPageState extends State<WorldMapPage>
 
   @override
   void initState() {
+    // controller = TabController(length: 2, initialIndex: 0, vsync: this);
+    // super.initState();
     controller = TabController(length: 2, initialIndex: 0, vsync: this);
     super.initState();
+    controller.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -25,16 +30,70 @@ class _WorldMapPageState extends State<WorldMapPage>
     return Scaffold(
         drawer: NavDrawer(),
         appBar: AppBar(
+            iconTheme: IconThemeData(color: Colors.white),
+            backgroundColor: Colors.deepPurple,
             title: Text('Countries World Map',
-                style: TextStyle(color: Colors.blue)),
-            backgroundColor: Colors.transparent,
-            // backgroundColor: Color.fromARGB(255, 81, 164, 205),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.white)),
             elevation: 0,
-            bottom: TabBar(controller: controller, tabs: [
-              ListTile(title: Center(child: Text('Supported countries'))),
-              ListTile(title: Center(child: Text('Random colors'))),
-              // ListTile(title: Center(child: Text('Africa'))),
-            ])),
+            bottom: TabBar(
+              controller: controller,
+              indicatorColor: Colors.purpleAccent,
+              // tabs: [
+              //   ListTile(
+              //       title: Center(
+              //           child: Text('Supported countries',
+              //               style: Theme.of(context)
+              //                   .textTheme
+              //                   .titleMedium
+              //                   ?.copyWith(color: Colors.white)))),
+              //   ListTile(
+              //       selectedColor: Colors.purpleAccent,
+              //       title: Center(
+              //           child: Text('Random colors',
+              //               style: Theme.of(context)
+              //                   .textTheme
+              //                   .titleMedium
+              //                   ?.copyWith(color: Colors.white)))),
+              //   // ListTile(title: Center(child: Text('Africa'))),
+              // ]
+              tabs: [
+                Tab(
+                  child: Container(
+                    color: controller.index == 0
+                        ? Colors.blueAccent
+                        : Colors.deepPurple,
+                    child: Center(
+                      child: Text(
+                        'Supported countries',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Container(
+                    color: controller.index == 1
+                        ? Colors.blueAccent
+                        : Colors.deepPurple,
+                    child: Center(
+                      child: Text(
+                        'Random colors',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )),
         body: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -44,7 +103,6 @@ class _WorldMapPageState extends State<WorldMapPage>
               children: [
                 SupportedCountriesMap(),
                 RandomWorldMapGenerator(),
-                // AfricaContinent()
               ]),
         ));
   }

@@ -135,171 +135,176 @@ class _EditTaskPageState extends State<EditTaskPage> {
     double widthFactor =
         screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
 
-    return Dialog(
-      child: Container(
-        width: 600, // Set the width of the Scaffold
-        height: 600, // Set the height of the Scaffold
-        child: Scaffold(
-          backgroundColor: Color.fromARGB(255, 161, 197, 123),
-          appBar: AppBar(
-            title: const Text('Edit Task'),
-          ),
-          body: SingleChildScrollView(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 800),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Edit Task',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
+    // return Dialog(
+    //   child: Container(
+    //     width: widthFactor * 1000,
+    //     height: widthFactor * 1000,
+    //     decoration: BoxDecoration(
+    //         color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+    //     child: Scaffold(
+    // backgroundColor: Colors.transparent,
+    // body: SingleChildScrollView(
+    //   child: Center(
+    //     child: ConstrainedBox(
+    //       constraints: const BoxConstraints(maxWidth: 1000),
+    //       child: Padding(
+    return AlertDialog(
+      scrollable: true,
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      content: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20.0),
+              const Text(
+                'Edit task',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40.0),
+              FractionallySizedBox(
+                widthFactor: widthFactor * 1.2,
+                child: buildTextField(
+                    _inputTitleController, 'Task\'s title', '', task.title),
+              ),
+              const SizedBox(height: 20.0),
+              FractionallySizedBox(
+                widthFactor: widthFactor * 1.2,
+                child: buildTextField(_descriptionController,
+                    'Task\'s description', '', task.description),
+              ),
+              const SizedBox(height: 20.0),
+              FractionallySizedBox(
+                widthFactor: widthFactor * 1.2,
+                child: buildDropdownButton(),
+              ),
+              const SizedBox(height: 20.0),
+              FractionallySizedBox(
+                widthFactor: widthFactor * 1.2,
+                child: buildTextField(
+                    _subtasksController,
+                    'Subtasks',
+                    'Write list\'s items separated by a commma',
+                    task.subtasks.join(',')),
+              ),
+              const SizedBox(height: 20.0),
+              FractionallySizedBox(
+                widthFactor: widthFactor * 1.2,
+                child: GestureDetector(
+                  onTap: () => _selectTime(context),
+                  child: AbsorbPointer(
+                    child: TextField(
+                      controller: TextEditingController(
+                          text: task.dueTime.toString().substring(10, 15)),
+                      //selectedTime.format(context)),
+                      decoration: const InputDecoration(
+                        labelText: 'Start time',
+                        labelStyle: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                        border: OutlineInputBorder(),
                       ),
-                      const SizedBox(height: 20.0),
-                      FractionallySizedBox(
-                        widthFactor: widthFactor,
-                        child: buildTextField(_inputTitleController,
-                            'Task\'s title', '', task.title),
-                      ),
-                      const SizedBox(height: 20.0),
-                      FractionallySizedBox(
-                        widthFactor: widthFactor,
-                        child: buildTextField(_descriptionController,
-                            'Task\'s description', '', task.description),
-                      ),
-                      const SizedBox(height: 20.0),
-                      FractionallySizedBox(
-                        widthFactor: widthFactor,
-                        child: buildDropdownButton(),
-                      ),
-                      const SizedBox(height: 20.0),
-                      FractionallySizedBox(
-                        widthFactor: widthFactor,
-                        child: buildTextField(
-                            _subtasksController,
-                            'Subtasks',
-                            'Write list\'s items separated by a commma',
-                            task.subtasks.join(',')),
-                      ),
-                      const SizedBox(height: 20.0),
-                      FractionallySizedBox(
-                        widthFactor: widthFactor,
-                        child: GestureDetector(
-                          onTap: () => _selectTime(context),
-                          child: AbsorbPointer(
-                            child: TextField(
-                              controller: TextEditingController(
-                                  text: task.dueTime
-                                      .toString()
-                                      .substring(10, 15)),
-                              //selectedTime.format(context)),
-                              decoration: const InputDecoration(
-                                labelText: 'Start time',
-                                labelStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20.0),
-                      FractionallySizedBox(
-                        widthFactor: widthFactor,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 212, 210, 210),
-                          ),
-                          child: TableCalendar<Task>(
-                            firstDay: kFirstDay,
-                            lastDay: kLastDay,
-                            focusedDay: _focusedDay,
-                            selectedDayPredicate: (day) =>
-                                isSameDay(_selectedDay, day),
-                            // rangeStartDay: _rangeStart,
-                            //rangeEndDay: _rangeEnd,
-                            calendarFormat: _calendarFormat,
-                            //  rangeSelectionMode: _rangeSelectionMode,
-                            // eventLoader: _getEventsForDay,
-                            startingDayOfWeek: StartingDayOfWeek.monday,
-                            calendarStyle: const CalendarStyle(
-                              // Use `CalendarStyle` to customize the UI
-                              outsideDaysVisible: false,
-                            ),
-                            onDaySelected: _onDaySelected,
-                            // onRangeSelected: _onRangeSelected,
-                            onFormatChanged: (format) {
-                              if (_calendarFormat != format) {
-                                setState(() {
-                                  _calendarFormat = format;
-                                });
-                              }
-                            },
-                            onPageChanged: (focusedDay) {
-                              _focusedDay = focusedDay;
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20.0),
-                      FractionallySizedBox(
-                        widthFactor: widthFactor,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            //selectedDay!.toIso8601String(),
-                            task.priority = selectedPriority;
-                            task.dueTime = selectedTime.toString();
-                            task.title = _inputTitleController.text;
-                            task.description = _descriptionController.text;
-                            task.dueDate = _selectedDay!.toIso8601String();
-                            List<String> items = _subtasksController.text
-                                .split(',')
-                                .map((word) => word.trim())
-                                .toList();
-                            task.subtasks = items;
-                            if (task.completedSubtasks.length <
-                                task.subtasks.length) {
-                              task.completedSubtasks.addAll(List.generate(
-                                  task.subtasks.length -
-                                      task.completedSubtasks.length,
-                                  (index) => false));
-                            } else if (task.completedSubtasks.length >
-                                task.subtasks.length) {
-                              task.completedSubtasks = task.completedSubtasks
-                                  .sublist(0, task.subtasks.length);
-                            }
-                            firebaseService.updateTask(task);
-                            initializeTaskList();
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: const Color(0xFFB6D0E2),
-                            padding: const EdgeInsets.symmetric(vertical: 15.0),
-                          ),
-                          child: const Text(
-                            'Save changes',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+              const SizedBox(height: 20.0),
+              FractionallySizedBox(
+                widthFactor: widthFactor * 1.4,
+                child: Container(
+                  width: 400,
+                  height: 365,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 212, 210, 210),
+                  ),
+                  child: TableCalendar<Task>(
+                    firstDay: kFirstDay,
+                    lastDay: kLastDay,
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    // rangeStartDay: _rangeStart,
+                    //rangeEndDay: _rangeEnd,
+                    calendarFormat: _calendarFormat,
+                    //  rangeSelectionMode: _rangeSelectionMode,
+                    // eventLoader: _getEventsForDay,
+                    startingDayOfWeek: StartingDayOfWeek.monday,
+                    calendarStyle: const CalendarStyle(
+                      // Use `CalendarStyle` to customize the UI
+                      outsideDaysVisible: false,
+                    ),
+                    onDaySelected: _onDaySelected,
+                    // onRangeSelected: _onRangeSelected,
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
+                    onPageChanged: (focusedDay) {
+                      _focusedDay = focusedDay;
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40.0),
+              FractionallySizedBox(
+                widthFactor: widthFactor * 1.2,
+                child: ElevatedButton(
+                  onPressed: () {
+                    //selectedDay!.toIso8601String(),
+                    task.priority = selectedPriority;
+                    task.dueTime = selectedTime.toString();
+                    task.title = _inputTitleController.text;
+                    task.description = _descriptionController.text;
+                    task.dueDate = _selectedDay!.toIso8601String();
+                    List<String> items = _subtasksController.text
+                        .split(',')
+                        .map((word) => word.trim())
+                        .toList();
+                    task.subtasks = items;
+                    if (task.completedSubtasks.length < task.subtasks.length) {
+                      task.completedSubtasks.addAll(List.generate(
+                          task.subtasks.length - task.completedSubtasks.length,
+                          (index) => false));
+                    } else if (task.completedSubtasks.length >
+                        task.subtasks.length) {
+                      task.completedSubtasks = task.completedSubtasks
+                          .sublist(0, task.subtasks.length);
+                    }
+                    firebaseService.updateTask(task);
+                    initializeTaskList();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: const Color(0xFFB6D0E2),
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                  ),
+                  child: const Text(
+                    'Save changes',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget buildDropdownButton() {

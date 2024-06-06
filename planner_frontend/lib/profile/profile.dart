@@ -42,6 +42,36 @@ class _ProfilePageState extends State<ProfilePage> {
               Text(user.email ?? '',
                   style: Theme.of(context).textTheme.headline6),
               const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text('${report.notes}',
+                          style: Theme.of(context).textTheme.headline2),
+                      Text('Notes Completed',
+                          style: Theme.of(context).textTheme.subtitle2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('${report.events}',
+                          style: Theme.of(context).textTheme.headline2),
+                      Text('Events Completed',
+                          style: Theme.of(context).textTheme.subtitle2),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('${report.tasks}',
+                          style: Theme.of(context).textTheme.headline2),
+                      Text('Tasks Completed',
+                          style: Theme.of(context).textTheme.subtitle2),
+                    ],
+                  ),
+                ],
+              ),
+              const Spacer(),
               Text('${report.total}',
                   style: Theme.of(context).textTheme.headline2),
               Text('Quizzes Completed',

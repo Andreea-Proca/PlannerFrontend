@@ -10,9 +10,10 @@ class Event {
   late String priority;
   late String startTime;
   late bool isCompleted;
+  late String userId;
 
   Event(this.id, this.day, this.title, this.priority, this.startTime,
-      this.isCompleted);
+      this.isCompleted, this.userId);
 
   // Convert a Message to a Map
   Map<String, dynamic> toMap() {
@@ -23,6 +24,7 @@ class Event {
       'priority': priority,
       'startTime': startTime,
       'isCompleted': isCompleted,
+      'userId': userId,
     };
   }
 
@@ -34,6 +36,7 @@ class Event {
     priority = map['priority'];
     startTime = map['startTime'];
     isCompleted = checkBool(map['isCompleted']);
+    userId = map['userId'];
   }
 
   bool checkBool(bool isCompleted) {

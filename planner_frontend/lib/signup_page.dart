@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:planner_frontend/services/firestore.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -12,16 +14,30 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
 
   Future<void> _signUp() async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
+      User? user = userCredential.user;
+      if (user != null) {
+        await user.updateDisplayName(_nameController.text.trim());
+        await user.reload();
+        user = FirebaseAuth.instance.currentUser;
+      }
+
+      FirestoreService().updateUserNETReport('tasks', 0);
+      FirestoreService().updateUserNETReport('notes', 0);
+      FirestoreService().updateUserNETReport('events', 0);
+      FirestoreService().updateUserReport(null);
       _navigateTo('/login');
     } catch (e) {
-      showErrorSnackBar('Eroare la înregistrare: $e');
+      showErrorSnackBar('Error while registering: $e');
     }
   }
 
@@ -66,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            'Înregistrare',
+                            'Register',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 24.0,
@@ -75,10 +91,13 @@ class _SignUpPageState extends State<SignUpPage> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 20.0),
+                          buildTextField(_nameController, 'Username',
+                              AutofillHints.username),
+                          const SizedBox(height: 20.0),
                           buildTextField(
                               _emailController, 'E-mail', AutofillHints.email),
                           const SizedBox(height: 20.0),
-                          buildTextField(_passwordController, 'Parola',
+                          buildTextField(_passwordController, 'Password',
                               AutofillHints.password,
                               obscureText: true),
                           const SizedBox(height: 20.0),
@@ -94,7 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   const EdgeInsets.symmetric(vertical: 15.0),
                             ),
                             child: const Text(
-                              'Înregistrare',
+                              'Register',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -113,7 +132,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   const EdgeInsets.symmetric(vertical: 15.0),
                             ),
                             child: const Text(
-                              'Aveți deja un cont? Conectați-vă',
+                              'Already have an account? Login',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),

@@ -7,9 +7,10 @@ class Note {
   late String dueDate;
   late List<bool> crossedDownList;
   late bool isCompleted;
+  late String userId;
 
   Note(this.id, this.title, this.items, this.dueDate, this.crossedDownList,
-      this.isCompleted);
+      this.isCompleted, this.userId);
 
   // Convert a Message to a Map
   Map<String, dynamic> toMap() {
@@ -20,6 +21,7 @@ class Note {
       'items': items,
       'dueDate': dueDate,
       'isCompleted': isCompleted,
+      'userId': userId,
     };
   }
 
@@ -31,5 +33,6 @@ class Note {
     items = List<String>.from(map['items'] ?? []);
     dueDate = map['dueDate'];
     isCompleted = map['isCompleted'];
+    userId = map['userId'];
   }
 }

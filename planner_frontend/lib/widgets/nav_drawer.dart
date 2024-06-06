@@ -16,12 +16,29 @@ class NavDrawer extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 25),
             ),
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 89, 89, 186),
+              // color: Color.fromARGB(255, 65, 213, 230),
+              gradient: LinearGradient(
+                colors: [Colors.deepPurple, Color(0xFF00B4D8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               // image: DecorationImage(
               //     fit: BoxFit.fill,
               //     image: AssetImage('assets/images/bkgr.jpeg'))
             ),
           ),
+          const Text("General",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Color.fromARGB(255, 15, 8, 148)),
+              textAlign: TextAlign.center),
+          const Divider(
+              height: 1,
+              thickness: 3,
+              color: Color.fromARGB(255, 15, 8, 148),
+              indent: 10,
+              endIndent: 10),
           ListTile(
             leading: Icon(Icons.home),
             title: Text('Home'),
@@ -38,6 +55,18 @@ class NavDrawer extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/profile')
             },
           ),
+          const Text("Workspaces",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Color.fromARGB(255, 15, 8, 148)),
+              textAlign: TextAlign.center),
+          const Divider(
+              height: 1,
+              thickness: 3,
+              color: Color.fromARGB(255, 15, 8, 148),
+              indent: 10,
+              endIndent: 10),
           ListTile(
             leading: Icon(Icons.calendar_month),
             title: Text('Schedule'),
@@ -62,6 +91,18 @@ class NavDrawer extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/tasks')
             },
           ),
+          const Text("Game",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Color.fromARGB(255, 15, 8, 148)),
+              textAlign: TextAlign.center),
+          const Divider(
+              height: 1,
+              thickness: 3,
+              color: Color.fromARGB(255, 15, 8, 148),
+              indent: 10,
+              endIndent: 10),
           ListTile(
             leading: Icon(Icons.map_outlined),
             title: Text('World Map'),
@@ -71,15 +112,15 @@ class NavDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: () => {Navigator.of(context).pop()},
+            leading: Icon(Icons.leaderboard),
+            title: Text('Leaderboard'),
+            onTap: () => {
+              Navigator.of(context).pop(),
+              Navigator.pushReplacementNamed(context, '/leaderboard')
+            },
           ),
-          ListTile(
-            leading: Icon(Icons.border_color),
-            title: Text('Feedback'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
+          const Divider(
+              height: 1, thickness: 3, color: Color.fromARGB(255, 15, 8, 148)),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
@@ -112,7 +153,7 @@ class NavDrawer extends StatelessWidget {
             : (screenSize.width > 600 ? 0.75 : 0.95);
         return AlertDialog(
           scrollable: true,
-          backgroundColor: Color.fromARGB(255, 161, 197, 123),
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           title: Text('Are you sure you want to logout?'),
           content: Padding(
             padding: EdgeInsets.all(20.0),

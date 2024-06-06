@@ -17,10 +17,10 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            FontAwesomeIcons.bolt,
+            Icons.leaderboard,
             size: 20,
           ),
-          label: 'About',
+          label: 'Learderboard',
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -37,7 +37,7 @@ class BottomNavBar extends StatelessWidget {
             // do nothing
             break;
           case 1:
-            Navigator.pushNamed(context, '/about');
+            Navigator.pushNamed(context, '/leaderboard');
             break;
           case 2:
             Navigator.pushNamed(context, '/profile');

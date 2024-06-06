@@ -53,10 +53,11 @@ class QuizList extends StatelessWidget {
     return Column(
       children: topic.quizzes.map(
         (quiz) {
+          // print("TITLE " + quiz.title);
           if (quiz.id.startsWith(countryId)) {
             return Card(
-              shape:
-                  const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0)),
               elevation: 4,
               margin: const EdgeInsets.all(4),
               child: InkWell(
@@ -73,6 +74,7 @@ class QuizList extends StatelessWidget {
                   child: ListTile(
                     title: Text(
                       quiz.title,
+                      selectionColor: Colors.deepPurple,
                       style: Theme.of(context).textTheme.headline5,
                     ),
                     subtitle: Text(

@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyAD0ivs9-iSH13NyT4c7P-gaXBRjo24rMs</string>
+	<string>AIzaSyBvGX5ca4HGO45vRaKQMdHb6j4izNq7zTA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>20795749884</string>
+	<string>352835275222</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.plannerFrontend</string>
 	<key>PROJECT_ID</key>
-	<string>planner</string>
+	<string>task-manager-b0625</string>
 	<key>STORAGE_BUCKET</key>
-	<string>planner.appspot.com</string>
+	<string>task-manager-b0625.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:20795749884:ios:a8c2eb3829463acd4bae79</string>
+	<string>1:352835275222:ios:2a4e484349bc28d83bfc77</string>
+	<key>DATABASE_URL</key>
+	<string>https://task-manager-b0625-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>

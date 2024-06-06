@@ -40,7 +40,7 @@ class _NotesPageState extends State<NotesPage> with SharedMethods {
       drawer: const NavDrawer(),
       appBar: AppBar(
         title: const Text('Notes'),
-        backgroundColor: Color.fromARGB(255, 81, 164, 205),
+        backgroundColor: Color(0xFF00B4D8),
       ),
       body: FutureBuilder<List<Note>>(
         future: firebaseService

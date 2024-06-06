@@ -104,99 +104,101 @@ class _EditEventPageState extends State<EditEventPage> {
     double widthFactor =
         screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
 
-    return Dialog(
-      child: Container(
-        width: 500, // Set the width of the Scaffold
-        height: 600, // Set the height of the Scaffold
-        child: Scaffold(
-          backgroundColor: Color.fromARGB(255, 161, 197, 123),
-          appBar: AppBar(
-            title: const Text('Edit event'),
-          ),
-          body: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Edit event',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
+    // return Dialog(
+    //   child: Container(
+    //     width: widthFactor * 800,
+    //     height: widthFactor * 900,
+    //     decoration: BoxDecoration(
+    //         color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+    //     child: Scaffold(
+    //       backgroundColor: Colors.transparent,
+    //       body: Center(
+    //         child: ConstrainedBox(
+    //           constraints: const BoxConstraints(maxWidth: 800),
+    //           child: Padding(
+    return AlertDialog(
+      scrollable: true,
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      //title: const Text('Create new list'),
+      content: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20.0),
+            Text(
+              'Edit event',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 40.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: buildTextField(
+                  _inputTitleController, 'Event\'s title', '', event.title),
+            ),
+            const SizedBox(height: 20.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: buildDropdownButton(),
+            ),
+            const SizedBox(height: 20.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: GestureDetector(
+                onTap: () => _selectTime(context),
+                child: AbsorbPointer(
+                  child: TextField(
+                    controller: TextEditingController(
+                        text: event.startTime.toString().substring(10, 15)),
+                    //selectedTime.format(context)),
+                    decoration: const InputDecoration(
+                      labelText: 'Start time',
+                      labelStyle: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                      border: OutlineInputBorder(),
                     ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: buildTextField(_inputTitleController,
-                          'Event\'s title', '', event.title),
-                    ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: buildDropdownButton(),
-                    ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: GestureDetector(
-                        onTap: () => _selectTime(context),
-                        child: AbsorbPointer(
-                          child: TextField(
-                            controller: TextEditingController(
-                                text: event.startTime
-                                    .toString()
-                                    .substring(10, 15)),
-                            //selectedTime.format(context)),
-                            decoration: const InputDecoration(
-                              labelText: 'Start time',
-                              labelStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20.0),
-                    FractionallySizedBox(
-                      widthFactor: widthFactor,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          //selectedDay!.toIso8601String(),
-                          event.priority = selectedPriority;
-                          event.startTime = selectedTime.toString();
-                          //event.startTime = selectedTime;
-                          event.title = _inputTitleController.text;
-                          firebaseService.updateEvent(event);
-                          initializeKEvents();
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.black,
-                          backgroundColor: const Color(0xFFB6D0E2),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        ),
-                        child: const Text(
-                          'Save changes',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            const SizedBox(height: 40.0),
+            FractionallySizedBox(
+              widthFactor: widthFactor * 1.2,
+              child: ElevatedButton(
+                onPressed: () {
+                  //selectedDay!.toIso8601String(),
+                  event.priority = selectedPriority;
+                  event.startTime = selectedTime.toString();
+                  //event.startTime = selectedTime;
+                  event.title = _inputTitleController.text;
+                  firebaseService.updateEvent(event);
+                  initializeKEvents();
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  backgroundColor: const Color(0xFFB6D0E2),
+                  padding: const EdgeInsets.symmetric(vertical: 15.0),
+                ),
+                child: Text(
+                  'Save changes',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget buildDropdownButton() {

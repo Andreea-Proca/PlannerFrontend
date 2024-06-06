@@ -12,6 +12,10 @@ class TopicsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double widthFactor =
+        screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
+
     return FutureBuilder<List<Topic>>(
       future: FirestoreService().getTopics(),
       builder: (context, snapshot) {
@@ -27,9 +31,15 @@ class TopicsScreen extends StatelessWidget {
 
           return Scaffold(
             drawer: const NavDrawer(),
+            backgroundColor: Color.fromARGB(255, 138, 209, 242),
             appBar: AppBar(
+              iconTheme: IconThemeData(color: Colors.white),
               backgroundColor: Colors.deepPurple,
-              title: const Text('Topics'),
+              title: Text('Topics',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      ?.copyWith(color: Colors.white)),
               actions: [
                 IconButton(
                   icon: Icon(
@@ -52,7 +62,7 @@ class TopicsScreen extends StatelessWidget {
               primary: false,
               padding: const EdgeInsets.all(20.0),
               crossAxisSpacing: 10.0,
-              crossAxisCount: 2,
+              crossAxisCount: screenSize.width > 800 ? 4 : 2,
               children: topics
                   .map((topic) => TopicItem(
                         topic: topic,

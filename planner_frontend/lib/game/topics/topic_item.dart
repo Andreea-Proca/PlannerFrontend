@@ -42,10 +42,15 @@ class TopicItem extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Text(
                     topic.title,
-                    style: const TextStyle(
-                      height: 1.5,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                    // style: const TextStyle(
+                    //   height: 1.5,
+                    //   fontWeight: FontWeight.bold,
+                    // ),
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
@@ -67,22 +72,47 @@ class TopicScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double widthFactor =
+        screenSize.width > 800 ? 0.5 : (screenSize.width > 600 ? 0.75 : 0.95);
+
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 138, 209, 242),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.deepPurple,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: ListView(children: [
-        Hero(
-          tag: topic.img,
-          child: Image.asset('assets/covers/${topic.img}',
-              width: MediaQuery.of(context).size.width),
-        ),
-        Text(
-          topic.title,
-          style: const TextStyle(
-              height: 2, fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        Text("Description1: ${topic.description} length: ${topic.quizzes}"),
+        SizedBox(height: 10),
+        SizedBox(
+            height: screenSize.width > 800
+                ? screenSize.width * 0.15
+                : screenSize.width * 0.5,
+            child: Hero(
+              tag: topic.img,
+              child: Image.asset('assets/covers/${topic.img}',
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.contain),
+              // width: screenSize.width > 800
+              //     ? screenSize.width * 2
+              //     : MediaQuery.of(context).size.width),
+            )),
+        const Divider(height: 20, color: Colors.white),
+        Container(
+            decoration: BoxDecoration(
+              color: Colors.deepPurple,
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              topic.title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+            )),
+        const Divider(height: 20, color: Colors.white),
         QuizList(topic: topic, countryId: countryId),
       ]),
     );
